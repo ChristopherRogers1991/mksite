@@ -1,14 +1,9 @@
 from PIL import Image
 from PIL.ImageOps import exif_transpose
-from enum import Enum, auto
-from functools import cache, cached_property
+from enum import auto, Enum
+from functools import cached_property, cache
 from inspect import signature
-from os import walk, remove
-from os.path import join
-from oyaml import load, Loader
-from shutil import copytree
 from textwrap import dedent
-from typing import Iterable
 
 
 class ImageType(Enum):
@@ -48,6 +43,10 @@ class ImageWithMetadata():
     @cached_property
     def type(self):
         return ImageType.get_image_type(self.file_path)
+
+@cache
+def get_init_args(cls):
+    return list(signature(cls.__init__).parameters.keys())[1:]
 
 
 class Row():
@@ -103,9 +102,9 @@ class ImageImageRow(Row):
 # TODO - can type normalization be done with a decorator?
 class ImageImageImageRow(Row):
     def __init__(self,
-                left: str | ImageWithMetadata,
-                center: str | ImageWithMetadata,
-                right: str | ImageWithMetadata):
+                 left: str | ImageWithMetadata,
+                 center: str | ImageWithMetadata,
+                 right: str | ImageWithMetadata):
         if type(left) == str:
             left = ImageWithMetadata(left)
         if type(center) == str:
@@ -180,55 +179,3 @@ class ImageTextRow(Row):
                 </p>
             </span>
             """)
-
-
-@cache
-def get_init_args(cls):
-    return list(signature(cls.__init__).parameters.keys())[1:]
-
-
-def generate_page(rows: Iterable[Row], output_path: str):
-    start = dedent("""
-    <head>
-        <link rel="stylesheet" href="styles.css">
-        <script src="scripts.js"></script>
-    </head>
-
-    <body>
-    """)
-
-    end = "</body>"
-
-    with open(output_path, 'w') as output_file:
-        output_file.write(start)
-        for row in rows:
-            output_file.write(row.html())
-        output_file.write(end)
-
-
-def parse_to_rows(input_path: str) -> Iterable[Row]:
-    with open(input_path) as yaml_file:
-        data = load(yaml_file.read(), Loader=Loader)
-        return [Row.get_row(node) for node in data]
-
-
-def generate_site(input_directory: str, output_directory: str):
-    """
-    Given an input directory and an output directory:
-
-    Parse all yaml files recursively, producing symmetric html files
-    copy in CSS and JS
-
-    Copy all images files, resizing for web
-
-    Create docker file
-    """
-    copytree(input_directory, output_directory)
-    for dirpath, _, files in walk(output_directory):
-        for file in files:
-            if file.lower().endswith(".yml"):
-                rows = parse_to_rows(join(dirpath, file))
-                output_file = join(dirpath, file[:-4] + ".html")
-                generate_page(rows, output_file)
-                remove(join(dirpath, file))
-    copytree("resources/", output_directory, dirs_exist_ok=True)
