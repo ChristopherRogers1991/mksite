@@ -1,14 +1,14 @@
-from enum import Enum, auto
-
-from oyaml import load, Loader
 from PIL import Image
-from inspect import signature
+from PIL.ImageOps import exif_transpose
+from enum import Enum, auto
 from functools import cache, cached_property
-from typing import Iterable
-from os import walk, mkdir
-from os.path import join, exists, isdir
-from shutil import copy, copytree
+from inspect import signature
+from os import walk, remove
+from os.path import join
+from oyaml import load, Loader
+from shutil import copytree
 from textwrap import dedent
+from typing import Iterable
 
 
 class ImageType(Enum):
@@ -19,12 +19,16 @@ class ImageType(Enum):
     @classmethod
     def get_image_type(cls, file_path: str):
         image = Image.open(file_path)
-        ratio = image.height / image.width
+        image = exif_transpose(image)
+        ratio = image.width / image.height
         if ratio > 2:
             return cls.HORIZONTAL_WIDE
         if ratio > 1:
             return cls.HORIZONTAL
         return cls.VERTICAL
+
+    def __str__(self):
+        return self.name
 
 
 class ImageWithMetadata():
@@ -34,7 +38,12 @@ class ImageWithMetadata():
         self.caption = caption
 
     def __str__(self):
-        return self.file_path
+        return f'''
+        <div class=zoomable>
+            <img src={self.file_path} class="row-element {self.type}" onclick="fullScreenImage(this)"/>
+            <p class=show-on-hover>click to zoom</p>
+        </div>
+        '''
 
     @cached_property
     def type(self):
@@ -84,8 +93,9 @@ class ImageImageRow(Row):
     @cached_property
     def base_html(self):
         return dedent("""
-                <img src={left} class="row-element"/>
-                <img src={right} class="row-element"/>
+            <span class="image-image row">
+                {left}
+                {right}
             </span>
             """)
 
@@ -114,10 +124,10 @@ class ImageImageImageRow(Row):
     @cached_property
     def base_html(self):
         return dedent("""
-            <span>
-                <img src={left} class="row-element"/>
-                <img src={center} class="row-element"/>
-                <img src={right} class="row-element"/>
+            <span class="image-image-image row">
+                {left}
+                {center}
+                {right}
             </span>
             """)
 
@@ -138,18 +148,13 @@ class TextImageRow(Row):
     @property
     def base_html(self):
         return dedent("""
-            <span class="text-image row {image_type}">
+            <span class="text-image row">
                 <p>
                     {text}
                 </p>
-                <img src={file_path} class="row-element"/>
+                {image}
             </span>
             """)
-
-    def html(self):
-        return self.base_html.format(image_type = self.image.type,
-                                     text = self.text,
-                                     file_path = self.image.file_path)
 
 
 class ImageTextRow(Row):
@@ -168,18 +173,13 @@ class ImageTextRow(Row):
     @cached_property
     def base_html(self):
         return dedent("""
-            <span class="text-image row {image_type}">
-                <img src={file_path} class="row-element"/>
+            <span class="text-image row">
+                {image}
                 <p>
                     {text}
                 </p>
             </span>
             """)
-
-    def html(self):
-        return self.base_html.format(image_type = self.image.type,
-                                     text = self.text,
-                                     file_path = self.image.file_path)
 
 
 @cache
@@ -223,20 +223,6 @@ def generate_site(input_directory: str, output_directory: str):
 
     Create docker file
     """
-    # try:
-    #     mkdir(output_directory)
-    # except
-    # for dirpath, _, files in walk(input_directory):
-    #     current_output = join(output_directory, dirpath)
-    #     mkdir(join(current_output))
-    #     for file in files:
-    #         if not file.lower().endswith(".yml"):
-    #             copy(join(dirpath, file), current_output)
-    #         else:
-    #             output_file = join(dirpath, file[:-4] + ".html")
-    #             rows = parse_to_rows(join(dirpath, file))
-    #             generate_page(rows, output_file)
-
     copytree(input_directory, output_directory)
     for dirpath, _, files in walk(output_directory):
         for file in files:
@@ -244,3 +230,5 @@ def generate_site(input_directory: str, output_directory: str):
                 rows = parse_to_rows(join(dirpath, file))
                 output_file = join(dirpath, file[:-4] + ".html")
                 generate_page(rows, output_file)
+                remove(join(dirpath, file))
+    copytree("resources/", output_directory, dirs_exist_ok=True)
