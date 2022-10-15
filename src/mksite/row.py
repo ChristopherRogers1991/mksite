@@ -28,21 +28,35 @@ class ImageType(Enum):
 
 class ImageWithMetadata():
 
-    def __init__(self, file_path, caption=None):
-        self.file_path = file_path
+    def __init__(self, image, caption=None):
+        self.image = image
         self.caption = caption
 
     def __str__(self):
-        return f'''
+        captioned = "captioned" if self.caption else ""
+        caption = f'<p class="caption">{self.caption}</p>' if captioned else ""
+
+        return f"""
         <div class=zoomable>
-            <img src={self.file_path} class="row-element {self.type}" onclick="fullScreenImage(this)"/>
-            <p class=show-on-hover>click to zoom</p>
+            <span>
+                <img src={self.image} class="row-element {self.type} {captioned}" onclick="fullScreenImage(this)"/>
+                <p class=show-on-hover>click to zoom</p>
+                {caption}
+            </span>
         </div>
-        '''
+        """
 
     @cached_property
     def type(self):
-        return ImageType.get_image_type(self.file_path)
+        return ImageType.get_image_type(self.image)
+
+
+def normalize_images(*args):
+    results = []
+    for arg in args:
+        results.append(ImageWithMetadata(**arg) if type(arg) is dict else ImageWithMetadata(arg))
+    return tuple(results)
+
 
 @cache
 def get_init_args(cls):
@@ -52,15 +66,11 @@ def get_init_args(cls):
 class Row():
 
     @property
-    def base_html(self):
-        raise Exception("Must be implemented by subclasses")
-
-    @property
     def accepted_image_types(self):
         return ()
 
     def html(self):
-        return self.base_html.format(**self.__dict__)
+        raise Exception("Must be implemented by subclasses")
 
     def validate_image_types(self, *images):
         for image in images:
@@ -82,19 +92,15 @@ class Row():
 class ImageImageRow(Row):
 
     def __init__(self, left: str | ImageWithMetadata, right: str | ImageWithMetadata):
-        if type(left) == str:
-            left = ImageWithMetadata(left)
-        if type(right) == str:
-            right = ImageWithMetadata(right)
+        left, right = normalize_images(left, right)
         self.left = left
         self.right = right
 
-    @cached_property
-    def base_html(self):
-        return dedent("""
+    def html(self):
+        return dedent(f"""
             <span class="image-image row">
-                {left}
-                {right}
+                {self.left}
+                {self.right}
             </span>
             """)
 
@@ -105,12 +111,7 @@ class ImageImageImageRow(Row):
                  left: str | ImageWithMetadata,
                  center: str | ImageWithMetadata,
                  right: str | ImageWithMetadata):
-        if type(left) == str:
-            left = ImageWithMetadata(left)
-        if type(center) == str:
-            center = ImageWithMetadata(center)
-        if type(right) == str:
-            right = ImageWithMetadata(right)
+        left, center, right = normalize_images(left, center, right)
         self.validate_image_types(left, center, right)
         self.left = left
         self.center = center
@@ -120,13 +121,12 @@ class ImageImageImageRow(Row):
     def accepted_image_types(self):
         return ImageType.VERTICAL,
 
-    @cached_property
-    def base_html(self):
-        return dedent("""
+    def html(self):
+        return dedent(f"""
             <span class="image-image-image row">
-                {left}
-                {center}
-                {right}
+                {self.left}
+                {self.center}
+                {self.right}
             </span>
             """)
 
@@ -134,8 +134,7 @@ class ImageImageImageRow(Row):
 class TextImageRow(Row):
 
     def __init__(self, text: str, image: str | ImageWithMetadata):
-        if type(image) == str:
-            image = ImageWithMetadata(image)
+        image, = normalize_images(image)
         self.validate_image_types(image)
         self.text = text
         self.image = image
@@ -144,14 +143,13 @@ class TextImageRow(Row):
     def accepted_image_types(self):
         return ImageType.VERTICAL, ImageType.HORIZONTAL
 
-    @property
-    def base_html(self):
-        return dedent("""
+    def html(self):
+        return dedent(f"""
             <span class="text-image row">
-                <p>
-                    {text}
+                <p class=side-text>
+                    {self.text}
                 </p>
-                {image}
+                {self.image}
             </span>
             """)
 
@@ -159,8 +157,7 @@ class TextImageRow(Row):
 class ImageTextRow(Row):
 
     def __init__(self, image: str | ImageWithMetadata, text: str):
-        if type(image) == str:
-            image = ImageWithMetadata(image)
+        image, = normalize_images(image)
         self.validate_image_types(image)
         self.text = text
         self.image = image
@@ -169,13 +166,62 @@ class ImageTextRow(Row):
     def accepted_image_types(self):
         return ImageType.VERTICAL, ImageType.HORIZONTAL
 
-    @cached_property
-    def base_html(self):
-        return dedent("""
-            <span class="text-image row">
-                {image}
-                <p>
-                    {text}
+    def html(self):
+        return dedent(f"""
+            <span class="image-text row">
+                {self.image}
+                <p class=side-text>
+                    {self.text}
+                </p>
+            </span>
+            """)
+
+
+class HeaderRow(Row):
+
+    def __int__(self, heading, subheading):
+        self.heading = heading
+        self.subheading = subheading
+
+    def html(self):
+        return dedent(f"""
+            <h1 id="{self.heading}" class="row">{self.heading}</h1>
+            <h4 class="row">{self.subheading}</h4>
+        """)
+
+
+class ParagraphRow(Row):
+
+    def __init__(self, text):
+        self.text = text
+
+    def html(self):
+        return f'<span class="row"><p>{self.text}</p></span>'
+
+
+class CaptionRow(Row):
+
+    def __init__(self, caption):
+        self.caption = caption
+
+    def html(self):
+        return f'<span class="row"><p class="caption">{self.caption}</p></span>'
+
+
+class VideoRow(Row):
+
+    def __int__(self, id, caption):
+        self.id = id
+        self.caption = caption
+
+    def html(self):
+        return dedent(f"""
+            <span class="video-text row">
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{self.id}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </span>
+            <span class="row">
+                <p class="caption">
+                {self.caption}
                 </p>
             </span>
             """)

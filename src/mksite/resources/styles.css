@@ -1,26 +1,66 @@
 body {
-    margin-left: 10%;
-    margin-right: 10%;
-    min-width: 750px;
+    width: 80%;
+    margin: auto;
+}
+
+span, div {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+img {
+    width: 100%;
+    margin: auto;
 }
 
 .row {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-between;
     margin-bottom: 25px;
 }
 
 .zoomable p {
-    margin-top: -35px;
-    margin-left: 15px;
     color: #ffffff00;
+    width: fit-content;
+    margin: auto;
+    margin-top: -20px;
 }
 
 .zoomable:hover p {
-    color: white
+    color: white;
+    width: fit-content;
+
 }
 
+.side-text {
+    width: 100%;
+    margin: auto;
+}
+
+.text-image .side-text {
+    text-align: right;
+}
+
+.image-text .side-text {
+    text-align: left;
+}
+
+.row .caption {
+    margin: auto;
+    margin-top: -35px;
+}
+
+/* .text-image.row p {
+    width: 40%;
+} */
+
+/* .text-image.row img.HORIZONTAL {
+    width: 60%;
+}
+ */
+/*
 .text-image.row div {
     width: 100%
 }
@@ -29,16 +69,12 @@ body {
     width: 40%;
 }
 
-.text-image.row img.HORIZONTAL {
-    width: 95%;
-}
 
-.text-image.row p {
-    width: 40%;
-}
 
-.image-image.row img {
-    width: 35%;
+
+
+.image-image.row img.VERTICAL {
+    width: 80%;
 }
 
 .image-video.row img.HORIZONTAL {
@@ -60,15 +96,17 @@ body {
 .image-video.row div .caption {
     margin-top: 5px;
     width: 100%;
+    color: black;
 }
 
 .image-image.row div .HORIZONTAL.captioned {
-    width: 92.5%;
+    width: 100%;
 }
 
 .image-image.row div .caption {
     margin-top: -5px;
     width: 100%;
+    color: black;
 }
 
 .image-image.row img.HORIZONTAL {
@@ -106,6 +144,7 @@ body {
     margin-top: -20px;
     text-align: center;
     width: 50%;
+    color: black;
 }
 
 h4 {
@@ -134,4 +173,4 @@ p {
 #animation {
     display: block;
     margin: auto;
-}
+} */
