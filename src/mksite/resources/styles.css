@@ -11,14 +11,10 @@ span, div {
 
 img {
     width: 100%;
-    margin: auto;
 }
 
 .row {
-    display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 25px;
 }
 
 .zoomable p {
@@ -50,6 +46,10 @@ img {
 .row .caption {
     margin: auto;
     margin-top: -35px;
+}
+
+.image-image div.VERTICAL {
+    width: 230%;
 }
 
 /* .text-image.row p {

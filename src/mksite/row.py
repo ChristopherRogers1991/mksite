@@ -37,8 +37,8 @@ class ImageWithMetadata():
         caption = f'<p class="caption">{self.caption}</p>' if captioned else ""
 
         return f"""
-        <div class=zoomable>
-            <span>
+        <div class="zoomable {self.type}">
+            <span class="{self.type}">
                 <img src={self.image} class="row-element {self.type} {captioned}" onclick="fullScreenImage(this)"/>
                 <p class=show-on-hover>click to zoom</p>
                 {caption}

@@ -1,6 +1,4 @@
 function fullScreenImage(image) {
- 
-      console.log("clicked");
       if (document.fullscreenElement != null || document.webkitFullscreenElement != null) {
         if (document.exitFullscreen) {
           document.exitFullscreen();
