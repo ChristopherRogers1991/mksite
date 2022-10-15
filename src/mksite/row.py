@@ -179,7 +179,7 @@ class ImageTextRow(Row):
 
 class HeaderRow(Row):
 
-    def __int__(self, heading, subheading):
+    def __init__(self, heading: str, subheading: str):
         self.heading = heading
         self.subheading = subheading
 
