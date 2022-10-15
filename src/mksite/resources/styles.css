@@ -17,14 +17,14 @@ img {
     flex-direction: row;
 }
 
-.zoomable p {
+.zoomable .show-on-hover {
     color: #ffffff00;
     width: fit-content;
     margin: auto;
     margin-top: -20px;
 }
 
-.zoomable:hover p {
+.zoomable:hover .show-on-hover {
     color: white;
     width: fit-content;
 
@@ -50,6 +50,11 @@ img {
 
 .image-image div.VERTICAL {
     width: 230%;
+}
+
+.image-image p.caption {
+    color: black;
+    margin-top: 15px;
 }
 
 /* .text-image.row p {
