@@ -71,6 +71,20 @@ h4 {
     text-align: center;
 }
 
+.video-text.row {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+    margin-left: 20px;
+
+}
+
+iframe {
+    width: 100%;
+    aspect-ratio:16/9;
+}
+
 /* .text-image.row p {
     width: 40%;
 } */
