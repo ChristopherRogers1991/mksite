@@ -98,7 +98,7 @@ class ImageImageRow(Row):
 
     def html(self):
         return dedent(f"""
-            <span class="image-image row">
+            <span class="image-image {self.left.type}-{self.right.type} row">
                 {self.left}
                 {self.right}
             </span>
