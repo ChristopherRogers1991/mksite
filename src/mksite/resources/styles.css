@@ -1,6 +1,7 @@
 body {
     width: 80%;
     margin: auto;
+    padding-top: 10px;
 }
 
 span, div {
@@ -48,8 +49,25 @@ img {
     margin-top: -35px;
 }
 
-.image-image div.VERTICAL {
-    width: 230%;
+ .image-image div.VERTICAL {
+    width: 35%;
+}
+
+.image-image div.HORIZONTAL {
+    width: 61%;
+}
+
+.image-image {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.image-image.VERTICAL-VERTICAL {
+    justify-content: center;
+}
+
+.image-image.VERTICAL-VERTICAL img {
+    width: 100%
 }
 
 .image-image p.caption {
@@ -85,125 +103,6 @@ iframe {
     aspect-ratio:16/9;
 }
 
-/* .text-image.row p {
-    width: 40%;
-} */
-
-/* .text-image.row img.HORIZONTAL {
-    width: 60%;
+p:fullscreen,h1:fullscreen,h2:fullscreen,h3:fullscreen,h4:fullscreen,h5:fullscreen,h6:fullscreen {
+    color: white;
 }
- */
-/*
-.text-image.row div {
-    width: 100%
-}
-
-.text-image.row img {
-    width: 40%;
-}
-
-
-
-
-
-.image-image.row img.VERTICAL {
-    width: 80%;
-}
-
-.image-video.row img.HORIZONTAL {
-    width: 60.5%;
-}
-
-.image-image.row div {
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-}
-
-.image-video.row div {
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-}
-
-.image-video.row div .caption {
-    margin-top: 5px;
-    width: 100%;
-    color: black;
-}
-
-.image-image.row div .HORIZONTAL.captioned {
-    width: 100%;
-}
-
-.image-image.row div .caption {
-    margin-top: -5px;
-    width: 100%;
-    color: black;
-}
-
-.image-image.row img.HORIZONTAL {
-    width: 60.5%;
-}
-
-.image-image.row picture>img.HORIZONTAL {
-    display: block;
-    margin: auto;
-}
-
-.image-image.row img.HORIZONTALh {
-    width: 95%;
-}
-
-
-.image-image-image img {
-    width: 90%;
-}
-
-.image-image-image img.HORIZONTAL {
-    width: 56%;
-}
-
-.video-text.row iframe {
-    margin-right: 10px;
-}
-
-
-.row-element {
-    margin: 10px;
-}
-
-.caption {
-    margin-top: -20px;
-    text-align: center;
-    width: 50%;
-    color: black;
-}
-
-h4 {
-    margin-top: -20px;
-}
-
-p {
-    font-family: Garamond, Georgia, Times New Roman;
-    font-size: 20px;
-}
-
-.footer {
-    display: flex;
-    justify-content: space-between;
-}
-
-#small1 {
-    width: 31.5%;
-}
-
-#index {
-    width: 40%;
-    margin: auto;
-}
-
-#animation {
-    display: block;
-    margin: auto;
-} */

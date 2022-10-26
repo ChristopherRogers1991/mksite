@@ -16,6 +16,7 @@ def generate_page(rows: Iterable[Row], output_path: str):
     </head>
 
     <body>
+    <div id=fullscreen-container></div>
     """)
 
     end = "</body>"
