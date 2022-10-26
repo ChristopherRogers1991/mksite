@@ -185,8 +185,10 @@ class HeaderRow(Row):
 
     def html(self):
         return dedent(f"""
-            <h1 id="{self.heading}" class="row">{self.heading}</h1>
-            <h4 class="row">{self.subheading}</h4>
+            <span class="header row">
+                <h1 id="{self.heading}">{self.heading}</h1>
+                <h4>{self.subheading}</h4>
+            </span>
         """)
 
 

@@ -103,6 +103,11 @@ iframe {
     aspect-ratio:16/9;
 }
 
-p:fullscreen,h1:fullscreen,h2:fullscreen,h3:fullscreen,h4:fullscreen,h5:fullscreen,h6:fullscreen {
+.header {
+    flex-direction: column;
+}
+
+#fullscreen-container {
+    justify-content: center;
     color: white;
 }

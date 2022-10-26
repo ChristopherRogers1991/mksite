@@ -18,8 +18,13 @@ function fullScreenImage(image) {
       }
 };
 
-const rows = document.getElementsByClassName("row");
-const container = document.getElementById("fullscreen-container");
+let rows;
+let container;
+
+window.onload = (event) => {
+    rows = document.getElementsByClassName("row");
+    container = document.getElementById("fullscreen-container");
+};
 
 function slideShow() {
     document.addEventListener("keydown", (event) => {
