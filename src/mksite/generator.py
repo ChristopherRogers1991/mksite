@@ -14,12 +14,29 @@ def generate_page(rows: Iterable[Row], output_path: str):
         <link rel="stylesheet" href="styles.css">
         <script src="scripts.js"></script>
     </head>
-
     <body>
-    <div id=fullscreen-container></div>
+    <span id=controls>
+        <button id=slideshow-button onClick=slideShow()>Slides</button>
+        <button id=help onClick=help()>Help</button>
+        <div id=help-dialog>
+          <span>
+            <p>
+              Click any image on the page to see it fullscreen.<br/><br/>
+
+              Use the "Slides" button to the left to enter Slides view; then
+              navigate forward and backward using your arrow keys, or
+              by clicking/tapping on the right and left side of the screen,
+              respectively.
+            </p>
+          </span>
+        </div>
+    </span>
     """)
 
-    end = "</body>"
+    end = """
+    <div id=fullscreen-container></div>
+    </body>
+    """
 
     with open(output_path, 'w') as output_file:
         output_file.write(start)

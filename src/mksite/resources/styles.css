@@ -28,7 +28,6 @@ img {
 .zoomable:hover .show-on-hover {
     color: white;
     width: fit-content;
-
 }
 
 .side-text {
@@ -110,4 +109,43 @@ iframe {
 #fullscreen-container {
     justify-content: center;
     color: white;
+}
+
+#fullscreen-container .image-image p.caption {
+    color: white;
+    margin-top: 15px;
+}
+
+#fullscreen-container .zoomable:hover .show-on-hover {
+    color: #ffffff00;
+}
+
+button {
+    background: gainsboro;
+    border: none;
+    border-radius: 100px;
+    padding: 10px;
+    width: fit-content;
+}
+
+#controls {
+    justify-content: end;
+    display: flex;
+    flex-direction: row;
+    margin-right: 10px;
+}
+
+button {
+    margin-right: 5px;
+}
+
+#help-dialog {
+    display: none;
+    z-index: 1;
+    position: fixed;
+    margin-top: 35px;
+    border-radius: 10px;
+    box-shadow: 1px 3px 3px 3px #666;
+    width: 200px;
+    background: white;
 }
