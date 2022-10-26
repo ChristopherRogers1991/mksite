@@ -22,25 +22,32 @@ function fullScreenImage(image) {
 
 let rows;
 let container;
+let helpButton = document.getElementById("help");
+let helpDialog = document.getElementById("help-dialog");
+let slideshowButton = document.getElementById("slideshow-button");
 let viewingSlides = false;
 
 document.addEventListener("DOMContentLoaded", (event) => {
     rows = document.getElementsByClassName("row");
     container = document.getElementById("fullscreen-container");
+    helpButton = document.getElementById("help");
+    helpDialog = document.getElementById("help-dialog");
+    slideshowButton = document.getElementById("slideshow-button");
+});
+
+document.addEventListener("keydown", (event) => {
+    if (!viewingSlides) {
+        return;
+    }
+    if (event.key == "ArrowRight") {
+        nextSlide();
+    }
+    if (event.key == "ArrowLeft") {
+        previousSlide();
+    }
 });
 
 function slideShow() {
-    document.addEventListener("keydown", (event) => {
-        if (document.fullscreenElement !== container) {
-            return;
-        }
-        if (event.key == "ArrowRight") {
-            nextSlide();
-        }
-        if (event.key == "ArrowLeft") {
-            previousSlide();
-        }
-    });
     container.displaying = 0;
     clearContainer();
     container.requestFullscreen();
@@ -49,14 +56,14 @@ function slideShow() {
 }
 
 function nextSlide() {
-    if (container.disaplaying != rows.length - 1) {
+    if (container.displaying < rows.length - 1) {
         container.displaying += 1;
         container.innerHTML = rows[container.displaying].outerHTML;
     }
 }
 
 function previousSlide() {
-    if (container.displaying != 0) {
+    if (container.displaying > 0) {
         container.displaying -= 1;
         container.innerHTML = rows[container.displaying].outerHTML;
     }
@@ -79,17 +86,14 @@ function help() {
 }
 
 window.onclick = function(event) {
-    const button = document.getElementById("help");
-    const dialog = document.getElementById("help-dialog");
-    if (viewingSlides) {
+    if (event.target != slideshowButton && viewingSlides) {
         if (event.clientX >= window.innerWidth / 2) {
             nextSlide();
         } else {
             previousSlide()
         }
-        return;
     }
-    else if (event.target != button) {
-        dialog.style.display = "none";
+    else if (event.target != helpButton) {
+        helpDialog.style.display = "none";
     }
 }
