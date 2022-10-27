@@ -1,5 +1,5 @@
 body {
-    width: 80%;
+    width: 68%;
     margin: auto;
     padding-top: 10px;
 }
@@ -8,6 +8,15 @@ span, div {
     display: flex;
     flex-direction: column;
     padding: 10px;
+}
+
+span:fullscreen, div:fullscreen {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
 }
 
 img {
@@ -39,17 +48,24 @@ img {
     text-align: right;
 }
 
+.text-image div.VERTICAL {
+    width: 90%;
+}
+
+.image-text div.VERTICAL {
+    width: 90%;
+}
+
 .image-text .side-text {
     text-align: left;
 }
 
-.row .caption {
-    margin: auto;
-    margin-top: -35px;
-}
-
  .image-image div.VERTICAL {
     width: 35%;
+}
+
+.image-image.VERTICAL-VERTICAL div.VERTICAL {
+    width: 50%
 }
 
 .image-image div.HORIZONTAL {
@@ -65,11 +81,21 @@ img {
     justify-content: center;
 }
 
-.image-image.VERTICAL-VERTICAL img {
-    width: 100%
+
+.image-image-image .VERTICAL {
+    width: 98%
 }
 
-.image-image p.caption {
+.image .zoomable.HORIZONTAL {
+    width: 100%;
+}
+
+.image {
+    align-content: center;
+    justify-content: center;
+}
+
+p.caption {
     color: black;
     margin-top: 15px;
 }
@@ -88,7 +114,7 @@ h4 {
     text-align: center;
 }
 
-.video-text.row {
+.video.row {
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -111,7 +137,7 @@ iframe {
     color: white;
 }
 
-#fullscreen-container .image-image p.caption {
+#fullscreen-container p.caption {
     color: white;
     margin-top: 15px;
 }
@@ -120,12 +146,17 @@ iframe {
     color: #ffffff00;
 }
 
+#fullscreen-container .image .zoomable.HORIZONTAL {
+    width: 85%;
+}
+
 button {
     background: gainsboro;
     border: none;
     border-radius: 100px;
     padding: 10px;
     width: fit-content;
+    margin-right: 5px;
 }
 
 #controls {
@@ -135,9 +166,6 @@ button {
     margin-right: 10px;
 }
 
-button {
-    margin-right: 5px;
-}
 
 #help-dialog {
     display: none;

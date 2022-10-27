@@ -1,5 +1,5 @@
 from src.mksite.row import Row
-from os import walk, remove
+from os import walk, remove, chdir
 from os.path import join
 from oyaml import load, Loader
 from shutil import copytree
@@ -63,6 +63,8 @@ def generate_site(input_directory: str, output_directory: str):
     Create docker file
     """
     copytree(input_directory, output_directory)
+    copytree(str(resource_files('mksite.resources').joinpath("")), output_directory, dirs_exist_ok=True)
+    chdir(input_directory)
     for dirpath, _, files in walk(output_directory):
         for file in files:
             if file.lower().endswith(".yml"):
@@ -70,4 +72,3 @@ def generate_site(input_directory: str, output_directory: str):
                 output_file = join(dirpath, file[:-4] + ".html")
                 generate_page(rows, output_file)
                 remove(join(dirpath, file))
-    copytree(str(resource_files('mksite.resources').joinpath("")), output_directory, dirs_exist_ok=True)

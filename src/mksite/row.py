@@ -88,6 +88,18 @@ class Row():
                 return subclass(**kwargs)
         raise Exception(f"Arguments did not match any type. {kwargs}")
 
+class ImageRow(Row):
+
+    def __init__(self, image: str | ImageWithMetadata):
+        self.image, = normalize_images(image)
+
+    def html(self):
+        return dedent(f"""
+            <span class="image {self.image.type} row">
+                {self.image}
+            </span>
+            """)
+
 
 class ImageImageRow(Row):
 
@@ -218,7 +230,7 @@ class VideoRow(Row):
 
     def html(self):
         return dedent(f"""
-            <span class="video-text row">
+            <span class="video row">
                 <iframe src="https://www.youtube-nocookie.com/embed/{self.id}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 <p class="video-caption">
                 {self.caption}
