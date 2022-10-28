@@ -88,6 +88,7 @@ class Row():
                 return subclass(**kwargs)
         raise Exception(f"Arguments did not match any type. {kwargs}")
 
+
 class ImageRow(Row):
 
     def __init__(self, image: str | ImageWithMetadata):

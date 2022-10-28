@@ -49,7 +49,7 @@ img {
 }
 
 .text-image div.VERTICAL {
-    width: 90%;
+    width: 96.7%;
 }
 
 .image-text div.VERTICAL {
@@ -93,6 +93,10 @@ img {
 .image {
     align-content: center;
     justify-content: center;
+}
+
+.image.VERTICAL .zoomable {
+    width: 50%
 }
 
 p.caption {
@@ -146,8 +150,20 @@ iframe {
     color: #ffffff00;
 }
 
-#fullscreen-container .image .zoomable.HORIZONTAL {
+#fullscreen-container .image .zoomable.HORIZONTAL:not(:has(.captioned)) {
     width: 85%;
+}
+
+#fullscreen-container .image .zoomable.HORIZONTAL:has(.captioned) {
+    width: 75%;
+}
+
+#fullscreen-container .image-image .zoomable.VERTICAL:not(:has(.captioned)) {
+    width: 50%;
+}
+
+#fullscreen-container .image-image .zoomable.VERTICAL:has(.captioned) {
+    width: 45%;
 }
 
 button {
