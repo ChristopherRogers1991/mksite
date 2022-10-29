@@ -28,6 +28,8 @@ body {
     }
 }
 
+
+
 span, div {
     display: flex;
     flex-direction: column;
@@ -66,6 +68,11 @@ img {
 .side-text {
     width: 100%;
     margin: auto;
+}
+
+.text-image {
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .text-image .side-text {
@@ -223,4 +230,74 @@ button {
     box-shadow: 1px 3px 3px 3px #666;
     width: 200px;
     background: white;
+}
+
+@media only screen {
+    body {
+        font-size: .7em;
+    }
+
+    .text-image div.VERTICAL {
+        width: 70%;
+    }
+
+    .image-text div.VERTICAL {
+        width: 70%;
+    }
+
+    .image-text .side-text {
+        text-align: left;
+    }
+
+    .image-image div.VERTICAL {
+        width: 35%;
+    }
+
+    .image-image.VERTICAL-VERTICAL div.VERTICAL {
+        width: 35%
+    }
+
+    .image-image div.HORIZONTAL {
+        width: 61%;
+    }
+
+    .text-image div.HORIZONTAL, .image-text div.HORIZONTAL {
+        width: 200%;
+    }
+
+
+    .image .zoomable.HORIZONTAL {
+        width: 80%;
+    }
+
+    #fullscreen-container .zoomable:hover .show-on-hover {
+        color: #ffffff00;
+    }
+
+
+    #fullscreen-container:fullscreen .image .zoomable.HORIZONTAL:not(:has(.captioned)) {
+        width: 67%;
+    }
+
+    #fullscreen-container:fullscreen .image .zoomable.HORIZONTAL:has(.captioned) {
+        width: 63%;
+    }
+
+    #fullscreen-container:fullscreen .image-image .vertical-vertical .zoomable.VERTICAL:not(:has(.captioned)) {
+        width: 50%;
+    }
+
+    #fullscreen-container:fullscreen .image-image .zoomable.VERTICAL:has(.captioned) {
+        width: 37%;
+    }
+
+
+    #fullscreen-container:fullscreen .image-text div.VERTICAL {
+        width: 60%;
+    }
+
+    #fullscreen-container:fullscreen .image .zoomable.VERTICAL:not(:has(.captioned)) {
+        width: 38%;
+    }
+
 }
