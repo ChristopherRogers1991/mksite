@@ -4,6 +4,7 @@ from enum import auto, Enum
 from functools import cached_property, cache
 from inspect import signature
 from textwrap import dedent
+from os.path import basename
 
 
 class ImageType(Enum):
@@ -118,7 +119,6 @@ class ImageImageRow(Row):
             """)
 
 
-# TODO - can type normalization be done with a decorator?
 class ImageImageImageRow(Row):
     def __init__(self,
                  left: str | ImageWithMetadata,
@@ -238,3 +238,45 @@ class VideoRow(Row):
                 </p>
             </span>
             """)
+
+
+class Link():
+
+    def __init__(self, name, prefix=""):
+        self.name = name
+        self.prefix = prefix
+        self.title = self.name_to_title(name)
+
+    def __str__(self):
+        if self.name == "None":
+            return ""
+        return f"{self.prefix}<a href={self.name}.html>{self.title}</a>"
+
+    def name_to_title(self, name):
+        filename = basename(name)
+        return filename.title().replace("-", " ")
+
+
+class FooterRow(Row):
+
+    def __init__(self, previous, index, next):
+        self.previous = Link(previous, "Previous: ")
+        self.index = Link(index)
+        self.next = Link(next, "Next: ")
+
+    def html(self):
+        return dedent(f"""
+            <span class="footer">
+                <p>
+                {self.previous}
+                </p>
+
+                <p>
+                {self.index}
+                </p>
+
+                <p>
+                {self.next}
+                </p>
+            </span>
+        """)

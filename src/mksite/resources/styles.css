@@ -4,6 +4,30 @@ body {
     padding-top: 10px;
 }
 
+@media (max-width: 1775px) {
+    body {
+        width: 80%;
+    }
+}
+
+@media (max-width: 1630px) {
+    body {
+        width: 85%;
+    }
+}
+
+@media (max-width: 1340px) {
+    body {
+        width: 90%;
+    }
+}
+
+@media (max-width: 960px) {
+    body {
+        width: 100%;
+    }
+}
+
 span, div {
     display: flex;
     flex-direction: column;
@@ -150,21 +174,28 @@ iframe {
     color: #ffffff00;
 }
 
-#fullscreen-container .image .zoomable.HORIZONTAL:not(:has(.captioned)) {
+#fullscreen-container:fullscreen .image .zoomable.HORIZONTAL:not(:has(.captioned)) {
     width: 85%;
 }
 
-#fullscreen-container .image .zoomable.HORIZONTAL:has(.captioned) {
+#fullscreen-container:fullscreen .image .zoomable.HORIZONTAL:has(.captioned) {
     width: 75%;
 }
 
-#fullscreen-container .image-image .zoomable.VERTICAL:not(:has(.captioned)) {
+#fullscreen-container:fullscreen .image-image .vertical-vertical .zoomable.VERTICAL:not(:has(.captioned)) {
     width: 50%;
 }
 
-#fullscreen-container .image-image .zoomable.VERTICAL:has(.captioned) {
-    width: 45%;
+#fullscreen-container:fullscreen .image-image .zoomable.VERTICAL:has(.captioned) {
+    width: 43%;
 }
+
+.footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 
 button {
     background: gainsboro;
