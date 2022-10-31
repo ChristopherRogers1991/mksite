@@ -10,6 +10,8 @@ from importlib.resources import files as resource_files
 
 def generate_page(rows: Iterable[Row], output_path: str):
     start = dedent("""
+    <!DOCTYPE html>
+    <html lang="en">
     <head>
         <link rel="stylesheet" href="styles.css">
         <script src="scripts.js"></script>
@@ -27,6 +29,10 @@ def generate_page(rows: Iterable[Row], output_path: str):
               navigate forward and backward using your arrow keys, or
               by clicking/tapping on the right and left side of the screen,
               respectively.
+
+              Note: iOS <a href=https://developer.apple.com/forums/thread/133248>does
+              not support fullscreen</a>, so neither of the above features will work on
+              an iPhone/iPad.
             </p>
           </span>
         </div>

@@ -1,24 +1,57 @@
-function fullScreenImage(image) {
-      if (document.fullscreenElement != null && document.fullscreenElement !== image) {
-          return;
-      }
-      else if (document.fullscreenElement === image) {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-        else {
-          document.webkitCancelFullScreen();
-        }
-      }
-      else {
-        if (image.requestFullscreen) {
-          image.requestFullscreen();
-        }
-        else {
-          image.webkitRequestFullScreen();
-        }
-      }
-};
+function enterFullscreen(element) {
+    if (browserIsFullscreen()) {
+        return;
+    }
+    if (element.requestFullscreen) {
+        element.requestFullscreen({ navigationUI: "hide" });
+    }
+    else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen({ navigationUI: "hide" });
+    }
+    else if (element.webkitRequestFullScreen) {
+        element.webkitRequestFullScreen();
+    }
+    else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+    }
+}
+
+function exitFullscreen(){
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    }
+    else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+    }
+    else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+    }
+    else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+    }
+}
+
+function onFullscreenChange(callback){
+    document.addEventListener("fullscreenchange", (event) => {
+                callback(event);
+    }, false);
+
+    document.addEventListener("mozfullscreenchange", (event) => {
+                callback(event);
+    }, false);
+
+    document.addEventListener("webkitfullscreenchange", (event) => {
+                callback(event);
+    }, false);
+
+    document.addEventListener("msfullscreenchange", (event) => {
+                callback(event);
+    }, false);
+}
+
+function browserIsFullscreen(){
+        return document.fullscreenElement != null || document.webkitFullscreenElement != null;
+}
 
 let rows;
 let container;
@@ -49,8 +82,7 @@ document.addEventListener("keydown", (event) => {
 
 function slideShow() {
     container.displaying = 0;
-    clearContainer();
-    container.requestFullscreen();
+    enterFullscreen(container);
     container.innerHTML = rows[container.displaying].outerHTML;
     viewingSlides = true;
 }
@@ -69,10 +101,14 @@ function previousSlide() {
     }
 }
 
-document.addEventListener('fullscreenchange', (event) => {
-    if (!document.fullscreenElement) {
-        clearContainer();
-        viewingSlides = false;
+function exitSlideShow() {
+    clearContainer();
+    viewingSlides = false;
+}
+
+onFullscreenChange((event) => {
+    if (!browserIsFullscreen()) {
+        exitSlideShow();
     }
 });
 

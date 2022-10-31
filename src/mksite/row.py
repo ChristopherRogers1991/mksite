@@ -40,7 +40,7 @@ class ImageWithMetadata():
         return f"""
         <div class="zoomable {self.type}">
             <span class="{self.type}">
-                <img src={self.image} class="row-element {self.type} {captioned}" onclick="fullScreenImage(this)"/>
+                <img src={self.image} class="row-element {self.type} {captioned}" onclick="enterFullscreen(this)"/>
                 <p class=show-on-hover>click to zoom</p>
                 {caption}
             </span>
