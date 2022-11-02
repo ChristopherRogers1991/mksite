@@ -78,3 +78,4 @@ def generate_site(input_directory: str, output_directory: str):
                 output_file = join(dirpath, file[:-4] + ".html")
                 generate_page(rows, output_file)
                 remove(join(dirpath, file))
+    print("Done")
