@@ -211,7 +211,7 @@ class ParagraphRow(Row):
         self.text = text
 
     def html(self):
-        return f'<span class="row"><p>{self.text}</p></span>'
+        return f'<span class="paragraph row"><p>{self.text}</p></span>'
 
 
 class CaptionRow(Row):
