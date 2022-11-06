@@ -220,8 +220,8 @@ h4 {
     margin-top: 0px;
 }
 
-#fullscreen-container .zoomable:hover .show-on-hover {
-    color: #ffffff00;
+#fullscreen-container .show-on-hover {
+    display: none;
 }
 
 #fullscreen-container .image .zoomable.HORIZONTAL:not(:has(.captioned)) {
