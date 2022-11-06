@@ -267,15 +267,15 @@ class FooterRow(Row):
     def html(self):
         return dedent(f"""
             <span class="footer">
-                <p>
+                <p class="previous">
                 {self.previous}
                 </p>
 
-                <p>
+                <p class="index">
                 {self.index}
                 </p>
 
-                <p>
+                <p class="next">
                 {self.next}
                 </p>
             </span>

@@ -252,6 +252,22 @@ h4 {
     justify-content: space-between;
 }
 
+.footer p {
+    flex: 1 1 100%;
+}
+
+.footer .previous {
+    text-align: left;
+}
+
+.footer .index {
+    text-align: center;
+}
+
+.footer .next {
+    text-align: right;
+}
+
 button {
     background: gainsboro;
     border: none;
