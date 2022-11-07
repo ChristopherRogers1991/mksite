@@ -9,7 +9,12 @@ body {
 }
 
 img {
-    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    /*! height: ; */
+    width: max-content;
+    align-self: center;
+    flex: 1;
 }
 
 img:-webkit-full-screen {
@@ -38,6 +43,8 @@ span, div {
     display: flex;
     flex-direction: column;
     padding: 10px;
+    max-height: 100%;
+    /*! width: auto; */
 }
 
 span:fullscreen, div:fullscreen {
@@ -55,6 +62,8 @@ span:fullscreen, div:fullscreen {
 
 .row {
     flex-direction: row;
+    max-height: 100%;
+    max-width: 100%;
 }
 
 .zoomable .show-on-hover {
@@ -75,7 +84,8 @@ span:fullscreen, div:fullscreen {
 
 .side-text {
     margin: auto;
-    width: 45%;
+    /*! width: 45%; */
+    flex: 1 1 45%;
 }
 
 .text-image .side-text {
