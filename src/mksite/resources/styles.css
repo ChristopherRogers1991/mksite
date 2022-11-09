@@ -11,10 +11,10 @@ body {
 img {
     max-width: 100%;
     max-height: 100%;
-    /*! height: ; */
     width: max-content;
+    flex: 1 1 0%;
+    /*! margin-bottom: ; */
     align-self: center;
-    flex: 1;
 }
 
 img:-webkit-full-screen {
@@ -43,8 +43,8 @@ span, div {
     display: flex;
     flex-direction: column;
     padding: 10px;
+    max-width: 100%;
     max-height: 100%;
-    /*! width: auto; */
 }
 
 span:fullscreen, div:fullscreen {
@@ -62,8 +62,8 @@ span:fullscreen, div:fullscreen {
 
 .row {
     flex-direction: row;
-    max-height: 100%;
     max-width: 100%;
+    max-height: 100%;
 }
 
 .zoomable .show-on-hover {
@@ -84,8 +84,7 @@ span:fullscreen, div:fullscreen {
 
 .side-text {
     margin: auto;
-    /*! width: 45%; */
-    flex: 1 1 45%;
+    width: 45%;
 }
 
 .text-image .side-text {
@@ -227,7 +226,9 @@ h4 {
 
 #fullscreen-container p.caption {
     color: white;
-    margin-top: 0px;
+    margin-top: .5em;
+    flex: 0 1 auto;
+    margin-bottom: 1em;
 }
 
 #fullscreen-container .show-on-hover {
@@ -253,6 +254,8 @@ h4 {
 @media screen and (min-width: 768px) {
     #fullscreen-container {
         font-size: 1.4em;
+        padding: 0px;
+        margin: 0px;
     }
 }
 
