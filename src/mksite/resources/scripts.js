@@ -84,6 +84,7 @@ function slideShow() {
     container.displaying = 0;
     enterFullscreen(container);
     container.innerHTML = rows[container.displaying].outerHTML;
+    fixFSHeights(container)
     viewingSlides = true;
 }
 
@@ -91,6 +92,7 @@ function nextSlide() {
     if (container.displaying < rows.length - 1) {
         container.displaying += 1;
         container.innerHTML = rows[container.displaying].outerHTML;
+        fixFSHeights(container)
     }
 }
 
@@ -98,6 +100,7 @@ function previousSlide() {
     if (container.displaying > 0) {
         container.displaying -= 1;
         container.innerHTML = rows[container.displaying].outerHTML;
+        fixFSHeights(container)
     }
 }
 
@@ -132,4 +135,26 @@ window.onclick = function(event) {
     else if (event.target != helpButton) {
         helpDialog.style.display = "none";
     }
+}
+
+function fixHeights(element) {
+    if (element.children.length == 0) { console.log("No children"); return; }
+    height = element.parentElement.offsetHeight + "px";
+    element.style.maxHeight = height;
+    for (let i = 0; i < element.children.length; i++) {
+        fixHeights(element.children[i]);
+    }
+}
+
+function fixImageHeights(element) {
+    captioned = element.getElementsByClassName("captioned");
+    for (let i = 0; i < captioned.length; i++) {
+        let image = captioned[i];
+        image.style.maxHeight = image.parentElement.offsetHeight - image.nextElementSibling.nextElementSibling.offsetHeight + "px";
+    }
+}
+
+function fixFSHeights(element) {
+    fixHeights(element);
+    fixImageHeights(element);
 }
