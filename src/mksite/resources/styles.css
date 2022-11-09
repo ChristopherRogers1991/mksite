@@ -1,3 +1,8 @@
+body, html {
+    height: 100%;
+    width: 100%;
+}
+
 body {
     width: 68%;
     margin: auto;
@@ -229,7 +234,7 @@ h4 {
     flex: 1 1 0%;
     max-height: 100%;
     max-width: 100%;
-    height: 0px;
+    height: auto;
 }
 
 #fullscreen-container .image-image {
@@ -293,4 +298,12 @@ button {
     box-shadow: 1px 3px 3px 3px #666;
     width: 200px;
     background: white;
+}
+
+.image-image-image .zoomable {
+    max-width: 33%;
+}
+
+.image-image-image {
+    justify-content: space-evenly;
 }
