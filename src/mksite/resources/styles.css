@@ -206,6 +206,10 @@ h4 {
     color: white;
 }
 
+#fullscreen-container .row {
+    margin: 0px;
+}
+
 #fullscreen-container:-webkit-full-screen {
     background: black;
 }
