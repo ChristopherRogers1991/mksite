@@ -1,10 +1,13 @@
+* {
+    box-sizing: border-box;
+}
+
 body, html {
     height: 100%;
-    width: 100%;
 }
 
 body {
-    width: 68%;
+    width: 65%;
     margin: auto;
     padding-top: 10px;
     text-size-adjust: none;
@@ -46,28 +49,20 @@ img:-webkit-full-screen {
 span, div {
     display: flex;
     flex-direction: column;
-/*     padding: 10px; */
-    max-width: 100%;
-    max-height: 100%;
 }
 
-span:fullscreen, div:fullscreen {
-    display: flex;
-    flex-direction: column;
-/*     padding: 10px; */
-    justify-content: center;
-    align-content: center;
-    align-items: center;
-}
 
-.zoomable {
-    padding: 0px;
-}
 
 .row {
     flex-direction: row;
-    max-width: 100%;
-    max-height: 100%;
+    margin-top: 2em;
+}
+
+
+
+.zoomable {
+    padding: 0px;
+    flex-direction: column-reverse;
 }
 
 .zoomable .show-on-hover {
@@ -88,13 +83,12 @@ span:fullscreen, div:fullscreen {
 
 .side-text {
     margin: auto;
-    width: 45%;
+    padding: 1em;
+    width: 44%;
 }
 
 .text-image .side-text {
     text-align: right;
-    /* margin: 1em; */
-    padding: 1em;
 }
 
 .image-text .side-text {
@@ -107,7 +101,7 @@ span:fullscreen, div:fullscreen {
 /*** IMAGE-TEXT/TEXT-IMAGE VERTICAL ***/
 
 .text-image .zoomable.VERTICAL, .image-text .zoomable.VERTICAL {
-    width: 48%;
+    width: 48.7%;
 }
 
 
@@ -115,7 +109,7 @@ span:fullscreen, div:fullscreen {
 /*** IMAGE-TEXT/TEXT-IMAGE HORIZONTAL ***/
 
 .text-image .zoomable.HORIZONTAL, .image-text .zoomable.HORIZONTAL {
-    width: 70%;
+    width: 75.5%;
 }
 
 
@@ -127,19 +121,11 @@ span:fullscreen, div:fullscreen {
 }
 
 .image-image.VERTICAL-HORIZONTAL .zoomable.HORIZONTAL, .image-image.HORIZONTAL-VERTICAL .zoomable.HORIZONTAL {
-    width: 61%;
+    width: 62.5%;
 }
 
-#fullscreen-container .image-image.VERTICAL-VERTICAL .zoomable.VERTICAL {
-    max-width: 45%;
-}
-
-.image-image.VERTICAL-VERTICAL .zoomable.VERTICAL {
-    max-width: 48%;
-}
-
-.image-image div.HORIZONTAL {
-    width: 61%;
+.image-image.VERTICAL-VERTICAL .zoomable, .image-image.HORIZONTAL-HORIZONTAL .zoomable {
+    max-width: 48.7%;
 }
 
 .image-image {
@@ -191,8 +177,7 @@ iframe {
 
 p.caption {
     color: black;
-    margin-top: 15px;
-    margin-bottom: 0;
+    margin-top: .5em;
 }
 
 h1 {
@@ -246,6 +231,10 @@ h4 {
 
 #fullscreen-container .image-image {
     justify-content: space-evenly;
+}
+
+#fullscreen-container .image-image.VERTICAL-VERTICAL .zoomable.VERTICAL {
+    max-width: 45%;
 }
 
 @media screen and (min-width: 768px) {

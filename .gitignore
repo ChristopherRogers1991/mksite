@@ -3,4 +3,5 @@ __pycache__
 **.sw*
 **.pyc
 .idea
+.vscode
 **.egg-info
