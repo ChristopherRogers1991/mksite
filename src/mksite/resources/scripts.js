@@ -147,11 +147,12 @@ function fixHeights(element) {
 }
 
 function fixImageHeights(element) {
-    captioned = element.getElementsByClassName("captioned");
-    for (let i = 0; i < captioned.length; i++) {
-        let image = captioned[i];
-        image.style.maxHeight = image.parentElement.offsetHeight - image.nextElementSibling.nextElementSibling.offsetHeight + "px";
-    }
+    captioned = Array.from(element.getElementsByClassName("captioned"));
+    captioned.forEach((captioned_image) => {
+        let image = captioned_image.getElementsByTagName("img")[0];
+        let caption = captioned_image.getElementsByClassName("caption")[0];
+        image.style.maxHeight = image.parentElement.offsetHeight - caption.offsetHeight + "px";
+    });
 }
 
 function fixFSHeights(element) {
