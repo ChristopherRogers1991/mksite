@@ -41,7 +41,7 @@ class ImageWithMetadata():
         <div class="zoomable {self.type} {captioned}">
             {caption}
             <p class=show-on-hover>click to zoom</p>
-            <img src={self.image} class="row-element {self.type}" onclick="enterFullscreen(this)"/>
+            <img src={self.image} class="row-element {self.type}" onclick="toggleFullscreen(this)"/>
         </div>
         """
 

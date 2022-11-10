@@ -1,3 +1,12 @@
+function toggleFullscreen(element) {
+    if (browserIsFullscreen() && element === getFullscreenElement()) {
+        exitFullscreen();
+    }
+    else {
+        enterFullscreen(element);
+    }
+}
+
 function enterFullscreen(element) {
     if (browserIsFullscreen()) {
         return;
@@ -49,8 +58,15 @@ function onFullscreenChange(callback){
     }, false);
 }
 
-function browserIsFullscreen(){
+function browserIsFullscreen() {
         return document.fullscreenElement != null || document.webkitFullscreenElement != null;
+}
+
+function getFullscreenElement() {
+    if (document.fullscreenElement != null) {
+        return document.fullscreenElement;
+    }
+    return document.webkitFullscreenElement;
 }
 
 let rows;
