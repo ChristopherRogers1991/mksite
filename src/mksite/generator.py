@@ -23,7 +23,7 @@ def generate_page(rows: Iterable[Row], output_path: str):
         <div id=help-dialog>
           <span>
             <p>
-              Click any image on the page to see it fullscreen.<br/><br/>
+              Click any image on the page to see it fullscreen.
             </p>
             <p>
               Use the "Slides" button to the left to enter Slides view; then
