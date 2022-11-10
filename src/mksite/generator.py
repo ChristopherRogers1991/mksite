@@ -24,12 +24,14 @@ def generate_page(rows: Iterable[Row], output_path: str):
           <span>
             <p>
               Click any image on the page to see it fullscreen.<br/><br/>
-
+            </p>
+            <p>
               Use the "Slides" button to the left to enter Slides view; then
               navigate forward and backward using your arrow keys, or
               by clicking/tapping on the right and left side of the screen,
               respectively.
-
+            </p>
+            <p>
               Note: iOS <a href=https://developer.apple.com/forums/thread/133248>does
               not support fullscreen</a>, so neither of the above features will work on
               an iPhone/iPad.
