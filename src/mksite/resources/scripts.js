@@ -22,6 +22,20 @@ function enterFullscreen(element) {
     }
     else if (element.msRequestFullscreen) {
         element.msRequestFullscreen();
+    } else {
+        container.style.position = "fixed";
+        container.style.zIndex = "2";
+        container.style.background = "black";
+        container.style.height = "100%";
+        container.style.width = "100%";
+        container.style.top = "0px";
+        container.style.left = "0px";
+        container.style.display = "flex";
+
+        document.fauxFSElement = element;
+        if (element !== container) {
+            container.innerHTML = element.outerHTML;
+        }
     }
 }
 
@@ -37,6 +51,10 @@ function exitFullscreen(){
     }
     else if (document.msExitFullscreen) {
         document.msExitFullscreen();
+    } else {
+        container.style.display = "none";
+        document.fauxFSElement = null;
+        clearContainer()
     }
 }
 
@@ -59,14 +77,16 @@ function onFullscreenChange(callback){
 }
 
 function browserIsFullscreen() {
-        return document.fullscreenElement != null || document.webkitFullscreenElement != null;
+        return document.fullscreenElement != null || document.webkitFullscreenElement != null || document.fauxFSElement != null;
 }
 
 function getFullscreenElement() {
     if (document.fullscreenElement != null) {
         return document.fullscreenElement;
+    } else if (document.webkitFullscreenElement != null) {
+        return document.webkitFullscreenElement;
     }
-    return document.webkitFullscreenElement;
+    return document.fauxFSElement;
 }
 
 let rows;
@@ -85,6 +105,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
+    console.log(event.key);
     if (!viewingSlides) {
         return;
     }
@@ -93,6 +114,14 @@ document.addEventListener("keydown", (event) => {
     }
     if (event.key == "ArrowLeft") {
         previousSlide();
+    }
+    if (event.key == "Escape") {
+        if (document.fauxFSElement === container) {
+            exitSlideShow();
+        }
+        if (document.fauxFSElement != null) {
+            exitFullscreen(container);
+        }
     }
 });
 
