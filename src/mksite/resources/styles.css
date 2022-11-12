@@ -26,7 +26,20 @@ img:-webkit-full-screen {
     width: initial;
 }
 
-
+@media (max-resolution: 500dpi) and (orientation: portrait) {
+    body {
+      font-size: 200%;
+    }
+    button {
+      font-size: 80%;
+    }
+    #fullscreen-container {
+      font-size: initial;
+    }
+    .row {
+        margin-top: 1em;
+    }
+}
 
 @media (max-width: 1700px) {
     body {
@@ -99,7 +112,6 @@ img:-webkit-full-screen {
         width: 95%;
     }
 }
-
 
 
 span, div {
@@ -298,7 +310,7 @@ h4 {
     padding-left: 1em;
 }
 
-@media screen and (min-width: 900px) {
+@media screen and (min-width: 900px) and (max-resolution: 200dpi) {
     #fullscreen-container {
         font-size: 1.4em;
         padding: 0px;
