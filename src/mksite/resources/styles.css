@@ -26,7 +26,7 @@ img:-webkit-full-screen {
     width: initial;
 }
 
-@media (max-resolution: 500dpi) and (orientation: portrait) {
+@media (min-resolution: 160dpi) and (orientation: portrait) {
     body {
       font-size: 200%;
     }
@@ -41,69 +41,39 @@ img:-webkit-full-screen {
     }
 }
 
-@media (max-width: 1700px) {
+@media (max-aspect-ratio: 15/9) {
     body {
         width: 65%;
     }
 }
 
-@media (max-width: 1600px) {
-    body {
-        width: 67%;
-    }
-}
-
-@media (max-width: 1500px) {
+@media (max-aspect-ratio: 14/9) {
     body {
         width: 70%;
     }
 }
 
-@media (max-width: 1468px) {
-    body {
-        width: 73%;
-    }
-}
-
-@media (max-width: 1368px) {
+@media (max-aspect-ratio: 13/9) {
     body {
         width: 75%;
     }
 }
 
-@media (max-width: 1268px) {
-    body {
-        width: 77%;
-    }
-}
-
-@media (max-width: 1168px) {
+@media (max-aspect-ratio: 12/9) {
     body {
         width: 80%;
     }
 }
 
-@media (max-width: 1068px) {
-    body {
-        width: 83%;
-    }
-}
-
-@media (max-width: 968px) {
+@media (max-aspect-ratio: 11/9) {
     body {
         width: 85%;
     }
 }
 
-@media (max-width: 868px) {
+@media (max-aspect-ratio: 10/9) {
     body {
         width: 90%;
-    }
-}
-
-@media (max-width: 768px) {
-    body {
-        width: 95%;
     }
 }
 

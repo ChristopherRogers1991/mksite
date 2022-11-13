@@ -154,7 +154,9 @@ window.onclick = function(event) {
 }
 
 function fixHeights(element) {
-    if (element.children.length == 0) { console.log("No children"); return; }
+    if (element.children.length == 0) {
+        return;
+    }
     height = element.parentElement.offsetHeight + "px";
     element.style.maxHeight = height;
     for (let i = 0; i < element.children.length; i++) {
