@@ -100,15 +100,28 @@ span, div {
     padding: 0px;
     flex-direction: column-reverse;
     justify-content: center;
+    position: relative;
 }
 
-.zoomable .show-on-hover {
+.show-on-hover {
     color: #ffffff00;
-    width: fit-content;
-    margin-top: -20px;
     margin-left: auto;
     margin-right: auto;
+    margin-top: -1.5em;
     margin-bottom: 0px;
+}
+
+.credit {
+    background: black;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 0;
+    margin-right: .2em;
+    padding: 0px;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
 }
 
 .zoomable:hover .show-on-hover {
@@ -161,7 +174,6 @@ span, div {
 }
 
 .image-image.VERTICAL-HORIZONTAL .zoomable.HORIZONTAL, .image-image.HORIZONTAL-VERTICAL .zoomable.HORIZONTAL {
-    /* max-width: 62.5%; */
     flex: 0 1 63%;
 }
 
@@ -203,7 +215,7 @@ span, div {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-left: 20px; */
+    margin-left: 20px;
 
 }
 

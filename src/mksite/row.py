@@ -29,18 +29,21 @@ class ImageType(Enum):
 
 class ImageWithMetadata():
 
-    def __init__(self, image, caption=None):
+    def __init__(self, image, credit=None, caption=None):
         self.image = image
         self.caption = caption
+        self.credit = credit
 
     def __str__(self):
         captioned = "captioned" if self.caption else ""
         caption = f'<p class="caption">{self.caption}</p>' if captioned else ""
+        credit = f'<p class="credit">Photo Credit: {self.credit}</p>' if self.credit else ""
 
         return f"""
         <div class="zoomable {self.type} {captioned}">
             {caption}
             <p class=show-on-hover>click to zoom</p>
+            {credit}
             <img src={self.image} class="row-element {self.type}" onclick="toggleFullscreen(this)"/>
         </div>
         """
