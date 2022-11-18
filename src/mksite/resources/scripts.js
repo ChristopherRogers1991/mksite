@@ -165,6 +165,10 @@ function fixHeights(element) {
 }
 
 function fixImageHeights(element) {
+    all_images = Array.from(element.getElementsByTagName("img"));
+    all_images.forEach((image) => {
+        image.style.maxHeight = image.parentElement.offsetHeight + "px";
+    });
     captioned = Array.from(element.getElementsByClassName("captioned"));
     captioned.forEach((captioned_image) => {
         let image = captioned_image.getElementsByTagName("img")[0];
