@@ -271,7 +271,7 @@ class FooterRow(Row):
 
     def html(self):
         return dedent(f"""
-            <span class="footer">
+            <span class="footer row">
                 <p class="previous">
                 {self.previous}
                 </p>
