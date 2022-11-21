@@ -105,7 +105,7 @@ function slideShow() {
 }
 
 function nextSlide() {
-    if (container.displaying < rows.length - 1) {
+    if (container.displaying < rows.length - 2) {
         container.displaying += 1;
         container.innerHTML = rows[container.displaying].outerHTML;
         fixFSHeights(container)
