@@ -230,14 +230,14 @@ class CaptionRow(Row):
 
 class VideoRow(Row):
 
-    def __init__(self, id, caption):
-        self.id = id
+    def __init__(self, video, caption):
+        self.video = video
         self.caption = caption
 
     def html(self):
         return dedent(f"""
             <span class="video row">
-                <iframe src="https://www.youtube-nocookie.com/embed/{self.id}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe src="https://www.youtube-nocookie.com/embed/{self.video}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 <p class="video-caption">
                 {self.caption}
                 </p>
