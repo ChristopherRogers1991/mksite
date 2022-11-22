@@ -125,6 +125,7 @@ span, div {
     position: absolute;
     bottom: 0.3em;
     width: 100%;
+    transition: color .3s;
 }
 
 .show-on-hover p {
@@ -141,12 +142,17 @@ span, div {
     padding: 0px;
     padding-right: 0.5em;
     padding-left: 0.5em;
+    transition: background .3s, color .3s;
 }
 
 .zoomable:hover .show-on-hover {
     color: white;
     z-index: 1;
-    /* width: fit-content; */
+}
+
+.zoomable:hover .credit {
+    background: #00000000;
+    color: #ffffff00;
 }
 
 .zoomable:hover .show-on-hover p {
