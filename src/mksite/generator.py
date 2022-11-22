@@ -1,4 +1,5 @@
 from src.mksite.row import Row
+from src.mksite.index import Index
 from os import walk, remove, chdir
 from os.path import join
 from oyaml import load, Loader
@@ -75,9 +76,15 @@ def generate_site(input_directory: str, output_directory: str):
     chdir(input_directory)
     for dirpath, _, files in walk(output_directory):
         for file in files:
-            if file.lower().endswith(".yml"):
+            if file == "index.yml":
+                Index.from_file(join(dirpath, file)).generate_html(dirpath)
+                remove(join(dirpath, file))
+            elif file.lower().endswith(".yml"):
                 rows = parse_to_rows(join(dirpath, file))
                 output_file = join(dirpath, file[:-4] + ".html")
                 generate_page(rows, output_file)
                 remove(join(dirpath, file))
-    print("Done")
+
+if __name__ == "__main__":
+    from sys import argv
+    generate_site(argv[1], argv[2])
