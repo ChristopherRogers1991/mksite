@@ -34,6 +34,6 @@ class Index():
 
     def _toc_list(self):
         items = "\n    ".join(
-            [f"<li><a href={page + '.html'}>{page.replace('_', ' ').titlecase()}</a></li>" for page in self.table_of_contents]
+            [f"<li><a href={page + '.html'}>{page.replace('_', ' ').title()}</a></li>" for page in self.table_of_contents]
         )
         return f"<ul>\n{items}\n</ul>"
