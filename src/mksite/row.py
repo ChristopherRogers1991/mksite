@@ -236,9 +236,9 @@ class VideoRow(Row):
 
     def html(self):
         return dedent(f"""
-            <span class="video row">
+            <span class="video row captioned">
                 <iframe src="https://www.youtube-nocookie.com/embed/{self.video}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                <p class="video-caption">
+                <p class="caption">
                 {self.caption}
                 </p>
             </span>
