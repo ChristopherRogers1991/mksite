@@ -164,20 +164,33 @@ function fixHeights(element) {
     }
 }
 
-function fixImageHeights(element) {
-    all_images = Array.from(element.getElementsByTagName("img"));
-    all_images.forEach((image) => {
-        image.style.maxHeight = image.parentElement.offsetHeight + "px";
+/* Set the maxHeight of leaf elements.
+
+TODO - this function could be cleaned up. We only have a max
+of three elements per line, so it's not super relevant that it's
+gross and inefficient, but... it's gross and inefficient. */
+function fixTagHeights(element, tag) {
+    all_tag = Array.from(element.getElementsByTagName(tag));
+    all_tag.forEach((tag_element) => {
+        tag_element.style.maxHeight = tag_element.parentElement.offsetHeight + "px";
     });
     captioned = Array.from(element.getElementsByClassName("captioned"));
-    captioned.forEach((captioned_image) => {
-        let image = captioned_image.getElementsByTagName("img")[0];
-        let caption = captioned_image.getElementsByClassName("caption")[0];
-        image.style.maxHeight = image.parentElement.offsetHeight - caption.offsetHeight + "px";
+    captioned.forEach((captioned_tag) => {
+        let tag_element = captioned_tag.getElementsByTagName(tag)[0];
+        if (tag_element == undefined) {
+            return;
+        }
+        let caption = captioned_tag.getElementsByClassName("caption")[0];
+        tag_element.style.maxHeight = (tag_element.parentElement.offsetHeight - caption.offsetHeight) + "px";
     });
 }
 
+/* This is a hack, to get around different browsers handling CSS
+   in different ways - it was possible to get the desired effect (elements
+    as large as possible, without pushing captions offscreen) in
+   Chrome/Firefox, but not webkit, OR webkit, but not Chrome/Firefox. */
 function fixFSHeights(element) {
     fixHeights(element);
-    fixImageHeights(element);
+    fixTagHeights(element, "img");
+    fixTagHeights(element, "iframe");
 }

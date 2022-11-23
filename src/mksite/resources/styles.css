@@ -250,7 +250,9 @@ iframe {
     aspect-ratio:16/9;
 }
 
-
+#fullscreen-container iframe {
+    width: 80%;
+}
 
 /*** --- ***/
 
