@@ -301,6 +301,8 @@ h4 {
     flex: 0 1 auto;
     margin-bottom: 1em;
     padding-bottom: 1em;
+    margin-right: 1em;
+    margin-left: 1em;
 }
 
 #fullscreen-container .show-on-hover {
@@ -318,6 +320,10 @@ h4 {
 #fullscreen-container .paragraph {
     padding-right: 1em;
     padding-left: 1em;
+}
+
+#fullscreen-container .paragraph p {
+    overflow-y: auto;
 }
 
 @media screen and (min-width: 900px) and (max-resolution: 200dpi) {
