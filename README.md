@@ -35,3 +35,9 @@ HTML files.
 Here's a gif showing a sample website:
 
 ![example gif](https://user-images.githubusercontent.com/8608191/206720769-17ef0979-fd33-4161-b722-2002e4d39bf4.gif)
+
+# Notes
+
+I use a camera that shoots 4:3 images. "WIDE" images are 2:1. The page layout looks reasonable with these aspect ratios,
+but I'm unsure how well things would line up with other aspect ratios. CSS tweaks might be necessary, to make things
+line up nicely.
