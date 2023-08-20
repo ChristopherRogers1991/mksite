@@ -1,5 +1,5 @@
-from src.mksite.row import Row
-from src.mksite.index import Index
+from mksite.row import Row
+from mksite.index import Index
 from os import walk, remove, chdir
 from os.path import join
 from oyaml import load, Loader
