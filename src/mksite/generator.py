@@ -1,16 +1,25 @@
 from mksite.row import Row
 from mksite.index import Index
-from os import walk, remove, chdir
 from os.path import join
+from os.path import getmtime
+from os.path import isfile
+from os.path import isdir
+from os.path import exists
+from os import chdir
+from os.path import splitext
+from os.path import basename
+from os.path import split
 from oyaml import load, Loader
 from shutil import copytree
+from shutil import copy2
 from textwrap import dedent
 from typing import Iterable
 from importlib.resources import files as resource_files
+from re import match
 
 
-def generate_page(rows: Iterable[Row], output_path: str):
-    start = dedent("""
+def generate_page(rows: Iterable[Row], output_path: str, modified_time: float):
+    start = dedent(f"""    <!--{modified_time}-->
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -60,6 +69,61 @@ def parse_to_rows(input_path: str) -> Iterable[Row]:
         return [Row.get_row(node) for node in data]
 
 
+def safe_copytree(input_directory: str, output_directory: str, **kwargs) -> bool:
+    try:
+        copytree(input_directory, output_directory, **kwargs)
+        return True
+    except FileExistsError:
+        response = input("Overwrite existing files? [y/N]")
+        kwargs['dirs_exist_ok'] = True
+        if response == "y":
+            copytree(input_directory, output_directory, **kwargs)
+            return True
+        else:
+            return False
+
+
+def to_html_path(path: str) -> str:
+    return splitext(path)[0] + ".html"
+
+
+def is_yml(path: str) -> bool:
+    return splitext(path)[1].lower() in (".yml", ".yaml")
+
+
+def copy_if_newer(input_path, output_path):
+    if isdir(output_path):
+        output_path = join(output_path, input_path)
+
+    output_path_exists = exists(output_path)
+
+    if output_path_exists and not isfile(output_path):
+        raise Exception(f"Refusing to copy a file over a directory: {input_path}, {output_path}")
+
+    if output_path_exists and getmtime(output_path) >= getmtime(input_path):
+        return
+    else:
+        copy2(input_path, output_path)
+
+
+def generate_from_yml(input_path, output_path):
+    is_index = splitext(basename(input_path))[0] == "index"
+    output_dir = split(output_path)[0]
+    output_path = to_html_path(output_path)
+    if exists(output_path):
+        with open(output_path) as existing_html:
+            first_line = existing_html.readline()
+            created_from = float(match("<!--(.+)-->\n", first_line).groups()[0])
+            if created_from == getmtime(input_path):
+                return
+
+    if is_index:
+        Index.from_file(input_path).generate_html(output_dir)
+    else:
+        rows = parse_to_rows(input_path)
+        generate_page(rows, to_html_path(output_path), getmtime(input_path))
+
+
 def generate_site(input_directory: str, output_directory: str):
     """
     Given an input directory and an output directory:
@@ -71,19 +135,22 @@ def generate_site(input_directory: str, output_directory: str):
 
     Create docker file
     """
-    copytree(input_directory, output_directory)
+    yml_files = []
+
+    def copy_or_capture(input_path, output_path):
+        if is_yml(input_path):
+            yml_files.append((input_path, output_path))
+        else:
+            copy_if_newer(input_path, output_path)
+
+    if not safe_copytree(input_directory, output_directory, copy_function=copy_or_capture):
+        exit(1)
     copytree(str(resource_files('mksite.resources').joinpath("")), output_directory, dirs_exist_ok=True)
-    chdir(input_directory)
-    for dirpath, _, files in walk(output_directory):
-        for file in files:
-            if file == "index.yml":
-                Index.from_file(join(dirpath, file)).generate_html(dirpath)
-                remove(join(dirpath, file))
-            elif file.lower().endswith(".yml"):
-                rows = parse_to_rows(join(dirpath, file))
-                output_file = join(dirpath, file[:-4] + ".html")
-                generate_page(rows, output_file)
-                remove(join(dirpath, file))
+
+    chdir(output_directory)
+    for input_path, output_path in yml_files:
+        generate_from_yml(input_path, output_path)
+
 
 if __name__ == "__main__":
     from sys import argv
