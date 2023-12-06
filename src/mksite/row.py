@@ -245,6 +245,43 @@ class VideoRow(Row):
             """)
 
 
+class WebmWithMetadata():
+
+    def __init__(self, webm, caption=None, credit=None):
+        self.path = webm
+        self.caption = caption
+        self.credit = credit
+
+
+class WebmRow(Row):
+    def __init__(self, webm: str | dict):
+        webm = WebmWithMetadata(webm) if type(webm) is str else WebmWithMetadata(**webm)
+        self.path = webm.path
+        self.caption = webm.caption
+        self.credit = webm.credit
+
+    def html(self):
+        caption = f'<p class="caption">{self.caption}</p>' if self.caption else ""
+        captioned = "captioned" if self.caption else ""
+        credit = f'<p class="credit">Photo Credit: {self.credit}</p>' if self.credit else ""
+        return f"""
+        <span class="webm row">
+            <div class="zoomable {captioned}">
+                {caption}
+                <div class=relative-wrapper>
+                    <video class="row-element webm" onclick="toggleFullscreen(this)" autoplay="true" loop="true" muted="true" playsinline="true">
+                        <source src={self.path}>
+                    </video>
+                    <div class=show-on-hover>
+                        <p>click to zoom</p>
+                    </div>
+                    {credit}
+                </div>
+            </div>
+        </span>
+        """
+
+
 class Link():
 
     def __init__(self, name, prefix=""):
