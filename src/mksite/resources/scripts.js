@@ -180,7 +180,7 @@ function fixTagHeights(element, tag, height) {
             return;
         }
         let caption = captioned_tag.getElementsByClassName("caption")[0];
-        tag_element.style.maxHeight = (tag_element.parentElement.offsetHeight - caption.offsetHeight) + "px";
+        tag_element.style.maxHeight = (height - caption.offsetHeight) + "px";
     });
 }
 
@@ -189,7 +189,7 @@ function fixTagHeights(element, tag, height) {
     as large as possible, without pushing captions offscreen) in
    Chrome/Firefox, but not webkit, OR webkit, but not Chrome/Firefox. */
 function fixFSHeights(element) {
-    const height = element.parentElement.offsetHeight;
+    const height = document.getElementById("fullscreen-container").offsetHeight;
     fixHeights(element, height);
     fixTagHeights(element, "img", height);
     fixTagHeights(element, "iframe", height);
