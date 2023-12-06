@@ -96,27 +96,27 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-function slideShow() {
+async function slideShow() {
     container.displaying = 0;
     enterFullscreen(container);
     container.innerHTML = rows[container.displaying].outerHTML;
-    fixFSHeights(container)
+    await fixFSHeights(container)
     viewingSlides = true;
 }
 
-function nextSlide() {
+async function nextSlide() {
     if (container.displaying < rows.length - 2) {
         container.displaying += 1;
         container.innerHTML = rows[container.displaying].outerHTML;
-        fixFSHeights(container)
+        await fixFSHeights(container)
     }
 }
 
-function previousSlide() {
+async function previousSlide() {
     if (container.displaying > 0) {
         container.displaying -= 1;
         container.innerHTML = rows[container.displaying].outerHTML;
-        fixFSHeights(container)
+        await fixFSHeights(container)
     }
 }
 
@@ -153,14 +153,15 @@ window.onclick = function(event) {
     }
 }
 
-function fixHeights(element) {
+async function fixHeights(element) {
     if (element.children.length == 0) {
         return;
     }
     height = element.parentElement.offsetHeight + "px";
     element.style.maxHeight = height;
+    await sleep(5)
     for (let i = 0; i < element.children.length; i++) {
-        fixHeights(element.children[i]);
+        await fixHeights(element.children[i]);
     }
 }
 
@@ -169,7 +170,7 @@ function fixHeights(element) {
 TODO - this function could be cleaned up. We only have a max
 of three elements per line, so it's not super relevant that it's
 gross and inefficient, but... it's gross and inefficient. */
-function fixTagHeights(element, tag) {
+async function fixTagHeights(element, tag) {
     all_tag = Array.from(element.getElementsByTagName(tag));
     all_tag.forEach((tag_element) => {
         tag_element.style.maxHeight = tag_element.parentElement.offsetHeight + "px";
@@ -189,8 +190,13 @@ function fixTagHeights(element, tag) {
    in different ways - it was possible to get the desired effect (elements
     as large as possible, without pushing captions offscreen) in
    Chrome/Firefox, but not webkit, OR webkit, but not Chrome/Firefox. */
-function fixFSHeights(element) {
-    fixHeights(element);
-    fixTagHeights(element, "img");
-    fixTagHeights(element, "iframe");
+async function fixFSHeights(element) {
+    await fixHeights(element);
+    await fixTagHeights(element, "img");
+    await fixTagHeights(element, "iframe");
+    await fixTagHeights(element, "video");
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
