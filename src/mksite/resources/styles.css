@@ -39,6 +39,15 @@ img:-webkit-full-screen {
     width: initial;
 }
 
+@media (min-height: 1500px) {
+    body {
+      font-size: 200%;
+    }
+    button {
+      font-size: 150%;
+    }
+}
+
 @media (min-resolution: 160dpi) and (orientation: portrait) {
     body {
       font-size: 200%;
