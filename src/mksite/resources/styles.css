@@ -16,16 +16,21 @@ body {
     -ms-text-size-adjust: none;
 }
 
+picture {
+    display: flex;
+}
 img {
     max-width: 100%;
     max-height: 100%;
     align-self: center;
+    margin: auto;
 }
 
 .webm {
     max-width: 100%;
     max-height: 100%;
     align-self: center;
+    margin: auto;
 }
 
 .relative-wrapper {
