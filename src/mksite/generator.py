@@ -16,6 +16,7 @@ from textwrap import dedent
 from typing import Iterable
 from importlib.resources import files as resource_files
 from re import match
+from PIL import Image
 
 
 def generate_page(rows: Iterable[Row], output_path: str, modified_time: float):
@@ -88,7 +89,15 @@ def to_html_path(path: str) -> str:
 
 
 def is_yml(path: str) -> bool:
-    return splitext(path)[1].lower() in (".yml", ".yaml")
+    return is_type (path, (".yml", ".yaml"))
+
+
+def is_jpg(path: str) -> bool:
+    return is_type (path, (".jpg", ".jpeg"))
+
+
+def is_type(path: str, extensions: tuple[str, ...]) -> bool:
+    return splitext(path)[1].lower() in extensions
 
 
 def copy_if_newer(input_path, output_path):
@@ -104,6 +113,46 @@ def copy_if_newer(input_path, output_path):
         return
     else:
         copy2(input_path, output_path)
+
+
+def copy_and_scale_if_newer(input_path: str, output_path: str):
+    if isdir(output_path):
+        input_base, ext = splitext(input_path)
+        input_path_1080 = f"{input_base}.1080{ext}"
+        input_path_4k = f"{input_base}.4k{ext}"
+        output_path_1080 = join(output_path, input_path_1080)
+        output_path_4k = join(output_path, input_path_4k)
+        output_path = join(output_path, input_path)
+    else:
+        output_base, ext = splitext(output_path)
+        output_path_1080 = f"{output_base}.1080{ext}"
+        output_path_4k = f"{output_base}.4k{ext}"
+
+    output_path_1080_exists = exists(output_path_1080)
+    output_path_4k_exists = exists(output_path_4k)
+    output_path_exists = exists(output_path)
+
+    if output_path_1080_exists and not isfile(output_path_1080):
+        raise Exception(f"Refusing to copy a file over a directory: {input_path}, {output_path_1080}")
+
+    if output_path_4k_exists and not isfile(output_path_4k):
+        raise Exception(f"Refusing to copy a file over a directory: {input_path}, {output_path_4k}")
+
+    image = Image.open(input_path)
+
+    if not output_path_1080_exists or getmtime(output_path_1080) < getmtime(input_path):
+        scaled = scale_image(image, 1080)
+        scaled.save(output_path_1080)
+    if not output_path_4k_exists or getmtime(output_path_4k) < getmtime(input_path):
+        scaled = scale_image(image, 2160)
+        scaled.save(output_path_4k)
+    if not output_path_exists or getmtime(output_path) < getmtime(input_path):
+        copy2(input_path, output_path)
+
+
+def scale_image(image: Image.Image, desired_height):
+    width = int(image.width * (desired_height / image.height))
+    return image.resize((width, desired_height), Image.Resampling.LANCZOS)
 
 
 def generate_from_yml(input_path, output_path):
@@ -140,6 +189,8 @@ def generate_site(input_directory: str, output_directory: str):
     def copy_or_capture(input_path, output_path):
         if is_yml(input_path):
             yml_files.append((input_path, output_path))
+        elif is_jpg(input_path):
+            copy_and_scale_if_newer(input_path, output_path)
         else:
             copy_if_newer(input_path, output_path)
 

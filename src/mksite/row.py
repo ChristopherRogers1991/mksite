@@ -5,6 +5,12 @@ from functools import cached_property, cache
 from inspect import signature
 from textwrap import dedent
 from os.path import basename
+from os.path import splitext
+
+
+def _get_scaled_image_paths(path):
+    base, ext = splitext(path)
+    return f"{base}.1080{ext}", f"{base}.4k{ext}"
 
 
 class ImageType(Enum):
@@ -38,12 +44,17 @@ class ImageWithMetadata():
         captioned = "captioned" if self.caption else ""
         caption = f'<p class="caption">{self.caption}</p>' if captioned else ""
         credit = f'<p class="credit">Photo Credit: {self.credit}</p>' if self.credit else ""
+        source_1080, source_4k = _get_scaled_image_paths(self.image)
 
         return f"""
         <div class="zoomable {self.type} {captioned}">
             {caption}
             <div class=relative-wrapper>
-                <img src={self.image} class="row-element {self.type}" onclick="toggleFullscreen(this)">
+                <picture class="row-element {self.type}" onclick="toggleFullscreen(this)">
+                    <source media="(min-height:1081px), (min-width:1921px" srcset={source_4k}>
+                    <source srcset={source_1080}>
+                    <img src={self.image}>
+                </picture>
                 <div class=show-on-hover>
                     <p>click to zoom</p>
                 </div>
