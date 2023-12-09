@@ -77,7 +77,7 @@ let slideshowButton = document.getElementById("slideshow-button");
 let viewingSlides = false;
 
 document.addEventListener("DOMContentLoaded", (event) => {
-    rows = document.getElementsByClassName("row");
+    rows = Array.from(document.getElementsByClassName("row"));
     container = document.getElementById("fullscreen-container");
     helpButton = document.getElementById("help");
     helpDialog = document.getElementById("help-dialog");
@@ -104,7 +104,11 @@ function slideShow() {
     viewingSlides = true;
 }
 
-function nextSlide() {
+async function nextSlide() {
+    if (rows[container.displaying + 1].classList.contains("footer")) {
+        const nextRows = await getNextPageOfRows(rows.pop().getElementsByClassName("next"));
+        rows.push.apply(rows, nextRows);
+    }
     if (container.displaying < rows.length - 2) {
         container.displaying += 1;
         container.innerHTML = rows[container.displaying].outerHTML;
@@ -194,4 +198,16 @@ function fixFSHeights(element) {
     fixTagHeights(element, "img", height);
     fixTagHeights(element, "iframe", height);
     fixTagHeights(element, "video", height);
+}
+
+
+async function getNextPageOfRows(next) {
+    if (next.length == 0) {
+        return;
+    }
+    const url = next[0].getElementsByTagName("a")[0].href;
+    const page = await fetch(url)
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(await page.text(), 'text/html');
+    return Array.from(doc.getElementsByClassName("row"));
 }
