@@ -305,6 +305,7 @@ h4 {
 #fullscreen-container {
     justify-content: center;
     color: white;
+    transition: opacity 0.3s;
 }
 
 #fullscreen-container .row {

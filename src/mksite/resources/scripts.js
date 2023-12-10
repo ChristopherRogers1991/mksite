@@ -104,23 +104,31 @@ function slideShow() {
     viewingSlides = true;
 }
 
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 async function nextSlide() {
     if (rows[container.displaying + 1].classList.contains("footer")) {
         const nextRows = await getNextPageOfRows(rows.pop().getElementsByClassName("next"));
         rows.push.apply(rows, nextRows);
     }
     if (container.displaying < rows.length - 2) {
+        container.style.opacity = 0;
+        await sleep(500);
         container.displaying += 1;
         container.innerHTML = rows[container.displaying].outerHTML;
         fixFSHeights(container)
+        container.style.opacity = 1;
     }
 }
 
-function previousSlide() {
+async function previousSlide() {
     if (container.displaying > 0) {
+        container.style.opacity = 0;
+        await sleep(500);
         container.displaying -= 1;
         container.innerHTML = rows[container.displaying].outerHTML;
         fixFSHeights(container)
+        container.style.opacity = 1;
     }
 }
 
