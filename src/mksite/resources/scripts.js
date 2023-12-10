@@ -106,12 +106,14 @@ function slideShow() {
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+const isHttp = ["http:", "https:"].includes(location.protocol);
+
 async function nextSlide() {
-    if (rows[container.displaying + 1].classList.contains("footer")) {
+    if (isHttp && rows[container.displaying + 1].classList.contains("footer")) {
         const nextRows = await getNextPageOfRows(rows.pop().getElementsByClassName("next"));
         rows.push.apply(rows, nextRows);
     }
-    if (container.displaying < rows.length - 2) {
+    if (container.displaying < rows.length - 1) {
         container.style.opacity = 0;
         await sleep(500);
         container.displaying += 1;
