@@ -295,15 +295,16 @@ class WebmRow(Row):
 
 class Link():
 
-    def __init__(self, name, prefix=""):
+    def __init__(self, name, prefix="", id=None):
         self.name = name
         self.prefix = prefix
         self.title = self.name_to_title(name)
+        self.id = f"id={id}" if id else None
 
     def __str__(self):
         if self.name == "None":
             return ""
-        return f"{self.prefix}<a href={self.name}.html>{self.title}</a>"
+        return f"{self.prefix}<a {self.id} href={self.name}.html>{self.title}</a>"
 
     def name_to_title(self, name):
         filename = basename(name)
@@ -311,15 +312,18 @@ class Link():
 
 
 class FooterRow(Row):
+    """
+    Only one of these should be used per page.
+    """
 
     def __init__(self, previous, index, next):
         self.previous = Link(previous, "Previous: ")
         self.index = Link(index)
-        self.next = Link(next, "Next: ")
+        self.next = Link(next, "Next: ", id="next-url")
 
     def html(self):
         return dedent(f"""
-            <span class="footer row">
+            <span id="footer" class="footer row">
                 <p class="previous">
                 {self.previous}
                 </p>

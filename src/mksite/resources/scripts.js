@@ -70,15 +70,17 @@ function getFullscreenElement() {
 }
 
 let rows;
-let container;
+let rowsContainer;
+let fullscreenContainer;
 let helpButton = document.getElementById("help");
 let helpDialog = document.getElementById("help-dialog");
 let slideshowButton = document.getElementById("slideshow-button");
 let viewingSlides = false;
 
 document.addEventListener("DOMContentLoaded", (event) => {
-    rows = Array.from(document.getElementsByClassName("row"));
-    container = document.getElementById("fullscreen-container");
+    rows = document.getElementsByClassName("row");
+    rowsContainer = document.getElementById("rows-container");
+    fullscreenContainer = document.getElementById("fullscreen-container");
     helpButton = document.getElementById("help");
     helpDialog = document.getElementById("help-dialog");
     slideshowButton = document.getElementById("slideshow-button");
@@ -97,10 +99,12 @@ document.addEventListener("keydown", (event) => {
 });
 
 function slideShow() {
-    container.displaying = 0;
-    enterFullscreen(container);
-    container.innerHTML = rows[container.displaying].outerHTML;
-    fixFSHeights(container)
+    if (fullscreenContainer.displaying == undefined) {
+        fullscreenContainer.displaying = 0;
+    }
+    enterFullscreen(fullscreenContainer);
+    fullscreenContainer.innerHTML = rows[fullscreenContainer.displaying].outerHTML;
+    fixFSHeights(fullscreenContainer)
     viewingSlides = true;
 }
 
@@ -109,28 +113,40 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const isHttp = ["http:", "https:"].includes(location.protocol);
 
 async function nextSlide() {
-    if (isHttp && rows[container.displaying + 1].classList.contains("footer")) {
-        const nextRows = await getNextPageOfRows(rows.pop().getElementsByClassName("next"));
-        rows.push.apply(rows, nextRows);
+    if (isHttp && rows[fullscreenContainer.displaying + 1].classList.contains("footer")) {
+        const nextRows = await getNextPageOfRows(document.getElementById("next-url").href);
+        rowsContainer.removeChild(document.getElementById("footer"));
+        const length = nextRows.length;
+        for (let i = 0; i < length; i++) {
+            /* This language is terrible. Appending nextRows[i] consumes the value from
+               nextRows for some reason, meaning we have to save the length as a constant
+               for the loop, and always append the 0th element. Note that it is only consumed
+               when it is appended. If you just iterate over the items and access them, e.g.
+               to log them, count them, etc, that works as expected. As soon as they are
+               appended to the rowsContainer, they are consumed. This means other loop styles,
+               e.g. `for (let item of nextRows)` also do not work, if appending the items. */
+            rowsContainer.append(nextRows[0]);
+        }
     }
-    if (container.displaying < rows.length - 1) {
-        container.style.opacity = 0;
+    if (fullscreenContainer.displaying < rows.length - 1) {
+        fullscreenContainer.style.opacity = 0;
         await sleep(500);
-        container.displaying += 1;
-        container.innerHTML = rows[container.displaying].outerHTML;
-        fixFSHeights(container)
-        container.style.opacity = 1;
+        fullscreenContainer.displaying += 1;
+        fullscreenContainer.innerHTML = rows[fullscreenContainer.displaying].outerHTML;
+        fixFSHeights(fullscreenContainer)
+        fullscreenContainer.style.opacity = 1;
     }
 }
 
+
 async function previousSlide() {
-    if (container.displaying > 0) {
-        container.style.opacity = 0;
+    if (fullscreenContainer.displaying > 0) {
+        fullscreenContainer.style.opacity = 0;
         await sleep(500);
-        container.displaying -= 1;
-        container.innerHTML = rows[container.displaying].outerHTML;
-        fixFSHeights(container)
-        container.style.opacity = 1;
+        fullscreenContainer.displaying -= 1;
+        fullscreenContainer.innerHTML = rows[fullscreenContainer.displaying].outerHTML;
+        fixFSHeights(fullscreenContainer)
+        fullscreenContainer.style.opacity = 1;
     }
 }
 
@@ -146,7 +162,7 @@ onFullscreenChange((event) => {
 });
 
 function clearContainer() {
-   container.innerHTML = '';
+   fullscreenContainer.innerHTML = '';
 }
 
 function help() {
@@ -203,7 +219,7 @@ function fixTagHeights(element, tag, height) {
     as large as possible, without pushing captions offscreen) in
    Chrome/Firefox, but not webkit, OR webkit, but not Chrome/Firefox. */
 function fixFSHeights(element) {
-    const height = document.getElementById("fullscreen-container").offsetHeight;
+    const height = fullscreenContainer.offsetHeight;
     fixHeights(element, height);
     fixTagHeights(element, "img", height);
     fixTagHeights(element, "iframe", height);
@@ -211,13 +227,9 @@ function fixFSHeights(element) {
 }
 
 
-async function getNextPageOfRows(next) {
-    if (next.length == 0) {
-        return;
-    }
-    const url = next[0].getElementsByTagName("a")[0].href;
+async function getNextPageOfRows(url) {
     const page = await fetch(url)
     const parser = new DOMParser()
     const doc = parser.parseFromString(await page.text(), 'text/html');
-    return Array.from(doc.getElementsByClassName("row"));
+    return doc.getElementsByClassName("row");
 }

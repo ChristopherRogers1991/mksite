@@ -50,9 +50,11 @@ def generate_page(rows: Iterable[Row], output_path: str, modified_time: float):
           </span>
         </div>
     </span>
+    <div id=rows-container>
     """)
 
     end = """
+    </div>
     <div id=fullscreen-container></div>
     </body>
     """
