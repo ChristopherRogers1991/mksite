@@ -84,6 +84,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
     helpButton = document.getElementById("help");
     helpDialog = document.getElementById("help-dialog");
     slideshowButton = document.getElementById("slideshow-button");
+    document.onmousemove = function() {
+        document.body.style.cursor = "default";
+        if (viewingSlides) {
+            window.setTimeout(function() {document.body.style.cursor = "none"}, 1000)
+        }
+    };
 });
 
 document.addEventListener("keydown", (event) => {
