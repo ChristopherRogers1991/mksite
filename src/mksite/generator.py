@@ -1,22 +1,23 @@
-from mksite.row import Row
+from PIL import Image
+from importlib.resources import files as resource_files
 from mksite.index import Index
-from os.path import join
-from os.path import getmtime
-from os.path import isfile
-from os.path import isdir
-from os.path import exists
+from mksite.row import Row
 from os import chdir
-from os.path import splitext
+from os.path import abspath
 from os.path import basename
+from os.path import exists
+from os.path import getmtime
+from os.path import isdir
+from os.path import isfile
+from os.path import join
 from os.path import split
+from os.path import splitext
 from oyaml import load, Loader
-from shutil import copytree
+from re import match
 from shutil import copy2
+from shutil import copytree
 from textwrap import dedent
 from typing import Iterable
-from importlib.resources import files as resource_files
-from re import match
-from PIL import Image
 
 
 def generate_page(rows: Iterable[Row], output_path: str, modified_time: float):
@@ -186,6 +187,8 @@ def generate_site(input_directory: str, output_directory: str):
 
     Create docker file
     """
+    input_directory = abspath(input_directory)
+    output_directory = abspath(output_directory)
     yml_files = []
 
     def copy_or_capture(input_path, output_path):
