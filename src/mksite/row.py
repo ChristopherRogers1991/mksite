@@ -1,11 +1,13 @@
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from PIL.ImageOps import exif_transpose
 from enum import auto, Enum
 from functools import cached_property, cache
 from inspect import signature
-from textwrap import dedent
 from os.path import basename
 from os.path import splitext
+from textwrap import dedent
+from warnings import warn
+import cv2
 
 
 def _get_scaled_image_paths(path):
@@ -20,14 +22,21 @@ class ImageType(Enum):
 
     @classmethod
     def get_image_type(cls, file_path: str):
-        image = Image.open(file_path)
-        image = exif_transpose(image)
-        ratio = image.width / image.height
+        try:
+            image = Image.open(file_path)
+            image = exif_transpose(image)
+            ratio = image.width / image.height
+        except UnidentifiedImageError:
+            vid = cv2.VideoCapture(file_path)
+            height = vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
+            width = vid.get(cv2.CAP_PROP_FRAME_WIDTH)
+            ratio = width / height
         if ratio > 2:
             return cls.HORIZONTAL_WIDE
         if ratio > 1:
             return cls.HORIZONTAL
         return cls.VERTICAL
+
 
     def __str__(self):
         return self.name
@@ -46,15 +55,26 @@ class ImageWithMetadata():
         credit = f'<p class="credit">Photo Credit: {self.credit}</p>' if self.credit else ""
         source_1080, source_4k = _get_scaled_image_paths(self.image)
 
-        return f"""
-        <div class="zoomable {self.type} {captioned}">
-            {caption}
-            <div class=relative-wrapper>
+        if self.image.endswith('webm'):
+            element = f"""
+                    <video class="row-element webm {self.type}" onclick="toggleFullscreen(this)" autoplay="true" loop="true" muted="true" playsinline="true">
+                        <source src={self.image}>
+                    </video>
+                      """
+        else:
+            element = f"""
                 <picture class="row-element {self.type}" onclick="toggleFullscreen(this)">
                     <source media="(min-height:1081px), (min-width:1921px" srcset={source_4k}>
                     <source srcset={source_1080}>
                     <img src={self.image}>
                 </picture>
+            """
+
+        return f"""
+        <div class="zoomable {self.type} {captioned}">
+            {caption}
+            <div class=relative-wrapper>
+                {element}
                 <div class=show-on-hover>
                     <p>click to zoom</p>
                 </div>
@@ -257,15 +277,22 @@ class VideoRow(Row):
 
 
 class WebmWithMetadata():
-
+    """
+    DEPRECATED: Webms are supported as images.
+    """
     def __init__(self, webm, caption=None, credit=None):
+        warn("Webm is deprecated. Webm files can be used as images.", DeprecationWarning)
         self.path = webm
         self.caption = caption
         self.credit = credit
 
 
 class WebmRow(Row):
+    """
+    DEPRECATED: Webms are supported as images.
+    """
     def __init__(self, webm: str | dict):
+        warn("Webm is deprecated. Webm files can be used as images.", DeprecationWarning)
         webm = WebmWithMetadata(webm) if type(webm) is str else WebmWithMetadata(**webm)
         self.path = webm.path
         self.caption = webm.caption
