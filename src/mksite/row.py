@@ -16,9 +16,22 @@ def _get_scaled_image_paths(path):
 
 
 class ImageType(Enum):
-    HORIZONTAL = auto()
-    HORIZONTAL_WIDE = auto()
-    VERTICAL = auto()
+    def __new__(cls, *args, **kwargs):
+        value = len(cls.__members__) + 1
+        obj = object.__new__(cls)
+        obj._value_ = value
+        return obj
+
+    def __init__(self, width: int, height: int):
+        self.width = width
+        self.height = height
+        self.ratio = width / height
+
+    HORIZONTAL_4x3 = 4, 3
+    HORIZONTAL_3x2 = 3, 2
+    HORIZONTAL_2x1 = 2, 1
+    VERTICAL_4x3 = 3, 4
+    VERTICAL_3x2 = 2, 3
 
     @classmethod
     def get_image_type(cls, file_path: str):
@@ -31,12 +44,11 @@ class ImageType(Enum):
             height = vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
             width = vid.get(cv2.CAP_PROP_FRAME_WIDTH)
             ratio = width / height
-        if ratio > 2:
-            return cls.HORIZONTAL_WIDE
-        if ratio > 1:
-            return cls.HORIZONTAL
-        return cls.VERTICAL
 
+        differences = {abs(image_type.ratio - ratio) : image_type for image_type in ImageType}
+        closest_match = differences[min(differences)]
+
+        return closest_match
 
     def __str__(self):
         return self.name
@@ -168,7 +180,7 @@ class ImageImageImageRow(Row):
 
     @property
     def accepted_image_types(self):
-        return ImageType.VERTICAL,
+        return ImageType.VERTICAL_4x3,
 
     def html(self):
         return dedent(f"""
@@ -190,7 +202,7 @@ class TextImageRow(Row):
 
     @property
     def accepted_image_types(self):
-        return ImageType.VERTICAL, ImageType.HORIZONTAL
+        return ImageType.VERTICAL_4x3, ImageType.HORIZONTAL_4x3
 
     def html(self):
         return dedent(f"""
@@ -213,7 +225,7 @@ class ImageTextRow(Row):
 
     @property
     def accepted_image_types(self):
-        return ImageType.VERTICAL, ImageType.HORIZONTAL
+        return ImageType.VERTICAL_4x3, ImageType.HORIZONTAL_4x3
 
     def html(self):
         return dedent(f"""

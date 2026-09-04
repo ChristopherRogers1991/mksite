@@ -199,17 +199,17 @@ span, div {
 
 
 
-/*** IMAGE-TEXT/TEXT-IMAGE VERTICAL ***/
+/*** IMAGE-TEXT/TEXT-IMAGE VERTICAL_4x3 ***/
 
-.text-image .zoomable.VERTICAL, .image-text .zoomable.VERTICAL {
+.text-image .zoomable.VERTICAL_4x3, .image-text .zoomable.VERTICAL_4x3 {
     width: 48.7%;
 }
 
 
 
-/*** IMAGE-TEXT/TEXT-IMAGE HORIZONTAL ***/
+/*** IMAGE-TEXT/TEXT-IMAGE HORIZONTAL_4x3 ***/
 
-.text-image .zoomable.HORIZONTAL, .image-text .zoomable.HORIZONTAL {
+.text-image .zoomable.HORIZONTAL_4x3, .image-text .zoomable.HORIZONTAL_4x3 {
     width: 75.5%;
 }
 
@@ -217,15 +217,27 @@ span, div {
 
 /*** IMAGE-IMAGE ***/
 
-.image-image.VERTICAL-HORIZONTAL .zoomable.VERTICAL, .image-image.HORIZONTAL-VERTICAL .zoomable.VERTICAL {
+.image-image.VERTICAL_4x3-HORIZONTAL_4x3 .zoomable.VERTICAL_4x3, .image-image.HORIZONTAL_4x3-VERTICAL_4x3 .zoomable.VERTICAL_4x3 {
     flex: 0 1 35.5%;
 }
 
-.image-image.VERTICAL-HORIZONTAL .zoomable.HORIZONTAL, .image-image.HORIZONTAL-VERTICAL .zoomable.HORIZONTAL {
+.image-image.VERTICAL_4x3-HORIZONTAL_4x3 .zoomable.HORIZONTAL_4x3, .image-image.HORIZONTAL_4x3-VERTICAL_4x3 .zoomable.HORIZONTAL_4x3 {
     flex: 0 1 63%;
 }
 
-.image-image.VERTICAL-VERTICAL .zoomable, .image-image.HORIZONTAL-HORIZONTAL .zoomable {
+.image-image.VERTICAL_4x3-VERTICAL_4x3 .zoomable, .image-image.HORIZONTAL_4x3-HORIZONTAL_4x3 .zoomable {
+    max-width: 48.7%;
+}
+
+.image-image.VERTICAL_3x2-HORIZONTAL_3x2 .zoomable.VERTICAL_3x2, .image-image.HORIZONTAL_3x2-VERTICAL_3x2 .zoomable.VERTICAL_3x2 {
+    flex: 0 1 30%;
+}
+
+.image-image.VERTICAL_3x2-HORIZONTAL_3x2 .zoomable.HORIZONTAL_3x2, .image-image.HORIZONTAL_3x2-VERTICAL_3x2 .zoomable.HORIZONTAL_3x2 {
+    flex: 0 1 67.5%;
+}
+
+.image-image.VERTICAL_3x2-VERTICAL_3x2 .zoomable, .image-image.HORIZONTAL_3x2-HORIZONTAL_3x2 .zoomable {
     max-width: 48.7%;
 }
 
@@ -243,15 +255,15 @@ span, div {
     justify-content: center;
 }
 
-.image .zoomable.HORIZONTAL {
+.image .zoomable.HORIZONTAL_4x3 {
     width: 100%;
 }
 
-.image .zoomable.HORIZONTAL_WIDE {
+.image .zoomable.HORIZONTAL_2x1 {
     width: 100%;
 }
 
-.image.VERTICAL .zoomable {
+.image.VERTICAL_4x3 .zoomable {
     width: 48%
 }
 
@@ -334,7 +346,7 @@ h4 {
     justify-content: space-evenly;
 }
 
-#fullscreen-container .image-image.VERTICAL-VERTICAL .zoomable.VERTICAL {
+#fullscreen-container .image-image.VERTICAL_4x3-VERTICAL_4x3 .zoomable.VERTICAL_4x3 {
     max-width: 45%;
 }
 
