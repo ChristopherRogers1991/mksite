@@ -1,3 +1,5 @@
+from tkinter.constants import HORIZONTAL
+
 from PIL import Image, UnidentifiedImageError
 from PIL.ImageOps import exif_transpose
 from enum import auto, Enum
@@ -14,8 +16,7 @@ def _get_scaled_image_paths(path):
     base, ext = splitext(path)
     return f"{base}.1080{ext}", f"{base}.4k{ext}"
 
-
-class ImageType(Enum):
+class AspectRatio(Enum):
     def __new__(cls, *args, **kwargs):
         value = len(cls.__members__) + 1
         obj = object.__new__(cls)
@@ -27,14 +28,14 @@ class ImageType(Enum):
         self.height = height
         self.ratio = width / height
 
-    HORIZONTAL_4x3 = 4, 3
-    HORIZONTAL_3x2 = 3, 2
-    HORIZONTAL_2x1 = 2, 1
-    VERTICAL_4x3 = 3, 4
-    VERTICAL_3x2 = 2, 3
+    FOUR_BY_THREE = 4, 3
+    THREE_BY_TWO = 3, 2
+    TWO_BY_ONE = 2, 1
+    THREE_BY_FOUR = 3, 4
+    TWO_BY_THREE = 2, 3
 
     @classmethod
-    def get_image_type(cls, file_path: str):
+    def get_image_metadata(cls, file_path: str):
         try:
             image = Image.open(file_path)
             image = exif_transpose(image)
@@ -45,7 +46,7 @@ class ImageType(Enum):
             width = vid.get(cv2.CAP_PROP_FRAME_WIDTH)
             ratio = width / height
 
-        differences = {abs(image_type.ratio - ratio) : image_type for image_type in ImageType}
+        differences = {abs(image_type.ratio - ratio) : image_type for image_type in AspectRatio}
         closest_match = differences[min(differences)]
 
         return closest_match
@@ -97,7 +98,7 @@ class ImageWithMetadata():
 
     @cached_property
     def type(self):
-        return ImageType.get_image_type(self.image)
+        return AspectRatio.get_image_metadata(self.image)
 
 
 def normalize_images(*args):
@@ -123,7 +124,7 @@ class Row():
 
     def validate_image_types(self, *images):
         for image in images:
-            image_type = image.type if type(image) == ImageWithMetadata else ImageType.get_image_type(image)
+            image_type = image.type if type(image) == ImageWithMetadata else AspectRatio.get_image_metadata(image)
             if image_type not in self.accepted_image_types:
                 raise Exception(f"{self.__class__.__name__} only supports {self.accepted_image_types}. "
                                 f"Type was {image_type}")
@@ -174,13 +175,15 @@ class ImageImageImageRow(Row):
                  right: str | ImageWithMetadata):
         left, center, right = normalize_images(left, center, right)
         self.validate_image_types(left, center, right)
+        aspect_ratios = [AspectRatio.get_image_metadata(image.image) for image in (left, center, right)]
+        assert len(set(aspect_ratios)) == 1, f"{self.__class__.__name__} images must all be the same aspect ratio. Images were: {aspect_ratios}"
         self.left = left
         self.center = center
         self.right = right
 
     @property
     def accepted_image_types(self):
-        return ImageType.VERTICAL_4x3,
+        return AspectRatio.THREE_BY_FOUR, AspectRatio.TWO_BY_THREE
 
     def html(self):
         return dedent(f"""
@@ -202,7 +205,10 @@ class TextImageRow(Row):
 
     @property
     def accepted_image_types(self):
-        return ImageType.VERTICAL_4x3, ImageType.HORIZONTAL_4x3
+        return (AspectRatio.THREE_BY_FOUR,
+                AspectRatio.FOUR_BY_THREE,
+                AspectRatio.TWO_BY_THREE,
+                AspectRatio.THREE_BY_TWO)
 
     def html(self):
         return dedent(f"""
@@ -225,7 +231,10 @@ class ImageTextRow(Row):
 
     @property
     def accepted_image_types(self):
-        return ImageType.VERTICAL_4x3, ImageType.HORIZONTAL_4x3
+        return (AspectRatio.THREE_BY_FOUR,
+                AspectRatio.FOUR_BY_THREE,
+                AspectRatio.TWO_BY_THREE,
+                AspectRatio.THREE_BY_TWO)
 
     def html(self):
         return dedent(f"""

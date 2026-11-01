@@ -29,6 +29,9 @@ def generate_page(rows: Iterable[Row], output_path: str, modified_time: float):
         <script src="scripts.js"></script>
     </head>
     <body>
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
     <span id=controls>
         <button id=slideshow-button onClick=slideShow()>Slides</button>
         <button id=help onClick=help()>Help</button>

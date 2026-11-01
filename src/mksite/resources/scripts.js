@@ -1,3 +1,8 @@
+window.addEventListener('load', () => {
+  const loader = document.getElementById('loader');
+  loader.style.display = 'none';
+});
+
 function toggleFullscreen(element) {
     if (browserIsFullscreen() && element === getFullscreenElement()) {
         exitFullscreen();
@@ -7,21 +12,21 @@ function toggleFullscreen(element) {
     }
 }
 
-function enterFullscreen(element) {
+async function enterFullscreen(element) {
     if (browserIsFullscreen()) {
         return;
     }
     if (element.requestFullscreen) {
-        element.requestFullscreen({ navigationUI: "hide" });
+        await element.requestFullscreen({ navigationUI: "hide" });
     }
     else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen({ navigationUI: "hide" });
+        await element.mozRequestFullScreen({ navigationUI: "hide" });
     }
     else if (element.webkitRequestFullScreen) {
-        element.webkitRequestFullScreen();
+        await element.webkitRequestFullScreen();
     }
     else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen();
+        await element.msRequestFullscreen();
     }
 }
 
@@ -104,11 +109,11 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-function slideShow() {
+async function slideShow() {
     if (fullscreenContainer.displaying == undefined) {
         fullscreenContainer.displaying = 0;
     }
-    enterFullscreen(fullscreenContainer);
+    await enterFullscreen(fullscreenContainer);
     fullscreenContainer.innerHTML = rows[fullscreenContainer.displaying].outerHTML;
     fixFSHeights(fullscreenContainer)
     viewingSlides = true;
@@ -205,11 +210,11 @@ TODO - this function could be cleaned up. We only have a max
 of three elements per line, so it's not super relevant that it's
 gross and inefficient, but... it's gross and inefficient. */
 function fixTagHeights(element, tag, height) {
-    all_tag = Array.from(element.getElementsByTagName(tag));
+    const all_tag = Array.from(element.getElementsByTagName(tag));
     all_tag.forEach((tag_element) => {
         tag_element.style.maxHeight = height + "px";
     });
-    captioned = Array.from(element.getElementsByClassName("captioned"));
+    const captioned = Array.from(element.getElementsByClassName("captioned"));
     captioned.forEach((captioned_tag) => {
         let tag_element = captioned_tag.getElementsByTagName(tag)[0];
         if (tag_element == undefined) {
@@ -222,9 +227,9 @@ function fixTagHeights(element, tag, height) {
 
 /* This is a hack, to get around different browsers handling CSS
    in different ways - it was possible to get the desired effect (elements
-    as large as possible, without pushing captions offscreen) in
+   as large as possible, without pushing captions offscreen) in
    Chrome/Firefox, but not webkit, OR webkit, but not Chrome/Firefox. */
-function fixFSHeights(element) {
+function fixFSHeights(element, flag = true) {
     const height = fullscreenContainer.offsetHeight;
     fixHeights(element, height);
     fixTagHeights(element, "img", height);
