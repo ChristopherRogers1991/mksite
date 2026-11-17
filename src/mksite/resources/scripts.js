@@ -1,3 +1,6 @@
+let scrollXPosition = 0;
+let scrollYPosition = 0;
+
 window.addEventListener('load', () => {
   const loader = document.getElementById('loader');
   loader.style.display = 'none';
@@ -16,6 +19,8 @@ async function enterFullscreen(element) {
     if (browserIsFullscreen()) {
         return;
     }
+    scrollXPosition = window.scrollX;
+    scrollYPosition = window.scrollY;
     if (element.requestFullscreen) {
         await element.requestFullscreen({ navigationUI: "hide" });
     }
@@ -30,18 +35,17 @@ async function enterFullscreen(element) {
     }
 }
 
-function exitFullscreen(){
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    }
-    else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-    }
-    else if (document.webkitCancelFullScreen) {
-        document.webkitCancelFullScreen();
-    }
-    else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
+async function exitFullscreen(){
+    const exit = document.exitFullscreen
+         || document.mozCancelFullScreen
+         || document.webkitCancelFullScreen
+         || document.msExitFullscreen;
+
+    if (exit) {
+        await exit.call(document);
+        // Wait for the browser to complete its layout reflow and fullscreen transition
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        await window.scrollTo(scrollXPosition, scrollYPosition);
     }
 }
 
