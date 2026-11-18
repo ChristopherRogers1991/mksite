@@ -99,7 +99,47 @@ document.addEventListener("DOMContentLoaded", (event) => {
             window.setTimeout(function() {document.body.style.cursor = "none"}, 1000)
         }
     };
+    initAspectRatios();
+    calculateRowLayouts();
 });
+
+window.addEventListener("resize", calculateRowLayouts);
+
+/**
+ * Copy data-aspect-ratio attributes to CSS custom properties so that
+ * CSS can use aspect-ratio: var(--aspect-ratio) without inline styles.
+ */
+function initAspectRatios() {
+    document.querySelectorAll('.zoomable[data-aspect-ratio]').forEach((el) => {
+        el.style.setProperty('--aspect-ratio', el.dataset.aspectRatio);
+    });
+}
+
+/**
+ * For multi-image rows, set flex-grow proportional to each image's aspect ratio
+ * so that all images share the same height while maintaining their original
+ * aspect ratios. A wider image (larger W/H ratio) gets a larger flex-grow,
+ * making it wider but keeping the height equal across the row.
+ */
+function calculateRowLayouts() {
+    const multiImageRows = document.querySelectorAll(".image-image.row, .image-image-image.row");
+
+    multiImageRows.forEach((row) => {
+        const zoomables = row.querySelectorAll(".zoomable[data-aspect-ratio]");
+        if (zoomables.length < 2) return;
+
+        const ratios = Array.from(zoomables).map((z) => {
+            const parts = z.dataset.aspectRatio.split("/");
+            return parts[0] / parts[1];
+        });
+
+        zoomables.forEach((z, i) => {
+            z.style.flexGrow = ratios[i];
+            z.style.flexShrink = 0;
+            z.style.flexBasis = "0";
+        });
+    });
+}
 
 document.addEventListener("keydown", (event) => {
     if (!viewingSlides) {
@@ -208,11 +248,8 @@ function fixHeights(element, height) {
     }
 }
 
-/* Set the maxHeight of leaf elements.
-
-TODO - this function could be cleaned up. We only have a max
-of three elements per line, so it's not super relevant that it's
-gross and inefficient, but... it's gross and inefficient. */
+/* Set the maxHeight of leaf elements (img, iframe, video) so they fit
+   within the fullscreen container while preserving aspect ratio. */
 function fixTagHeights(element, tag, height) {
     const all_tag = Array.from(element.getElementsByTagName(tag));
     all_tag.forEach((tag_element) => {

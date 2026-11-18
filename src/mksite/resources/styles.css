@@ -185,7 +185,8 @@ span, div {
 .side-text {
     margin: auto;
     padding: 1em;
-    width: 44%;
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 .text-image .side-text {
@@ -197,62 +198,33 @@ span, div {
 }
 
 
-
-
-/*** IMAGE-TEXT/TEXT-IMAGE THREE_BY_FOUR ***/
-
-.text-image .zoomable.THREE_BY_FOUR, .image-text .zoomable.THREE_BY_FOUR {
-    width: 48.7%;
-}
-
-/*** IMAGE-TEXT/TEXT-IMAGE THREE_BY_FOUR ***/
-
-.text-image .zoomable.THREE_BY_FOUR, .image-text .zoomable.THREE_BY_FOUR {
-    width: 48.7%;
-}
-
-/*** IMAGE-TEXT/TEXT-IMAGE TWO_BY_THREE ***/
-
-.text-image .zoomable.TWO_BY_THREE, .image-text .zoomable.TWO_BY_THREE {
-    width: 50%;
-}
-
-
-
 /*** IMAGE-IMAGE ***/
-
-.image-image.THREE_BY_FOUR-FOUR_BY_THREE .zoomable.THREE_BY_FOUR, .image-image.FOUR_BY_THREE-THREE_BY_FOUR .zoomable.THREE_BY_FOUR {
-    flex: 0 1 35.5%;
-}
-
-.image-image.THREE_BY_FOUR-FOUR_BY_THREE .zoomable.FOUR_BY_THREE, .image-image.FOUR_BY_THREE-THREE_BY_FOUR .zoomable.FOUR_BY_THREE {
-    flex: 0 1 63%;
-}
-
-.image-image.THREE_BY_FOUR-THREE_BY_FOUR .zoomable, .image-image.FOUR_BY_THREE-FOUR_BY_THREE .zoomable {
-    max-width: 48.7%;
-}
-
-.image-image.TWO_BY_THREE-THREE_BY_TWO .zoomable.TWO_BY_THREE, .image-image.THREE_BY_TWO-TWO_BY_THREE .zoomable.TWO_BY_THREE {
-    flex: 0 1 30%;
-}
-
-.image-image.TWO_BY_THREE-THREE_BY_TWO .zoomable.THREE_BY_TWO, .image-image.THREE_BY_TWO-TWO_BY_THREE .zoomable.THREE_BY_TWO {
-    flex: 0 1 67.5%;
-}
-
-.image-image.TWO_BY_THREE-TWO_BY_THREE .zoomable, .image-image.THREE_BY_TWO-THREE_BY_TWO .zoomable {
-    max-width: 48.7%;
-}
-
-.image-image.THREE_BY_FOUR-THREE_BY_TWO .zoomable.THREE_BY_FOUR, .image-image.FOUR_BY_THREE-TWO_BY_THREE .zoomable {
-    margin-right: 20px;
-}
 
 .image-image {
     flex-direction: row;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 20px;
+}
+
+.image-image .zoomable {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-image .zoomable > .relative-wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.image-image .zoomable > .relative-wrapper > .row-element {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: var(--aspect-ratio);
+    object-fit: contain;
 }
 
 
@@ -263,16 +235,83 @@ span, div {
     justify-content: center;
 }
 
-.image .zoomable.FOUR_BY_THREE {
+.image .zoomable {
+    margin: 0 auto;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image .zoomable > .relative-wrapper {
     width: 100%;
 }
 
-.image .zoomable.HORIZONTAL_2x1 {
+.image .zoomable > .relative-wrapper > .row-element {
     width: 100%;
+    aspect-ratio: var(--aspect-ratio);
 }
 
-.image.THREE_BY_FOUR .zoomable {
-    width: 48%
+
+/*** IMAGE-IMAGE-IMAGE ***/
+
+.image-image-image {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 20px;
+}
+
+.image-image-image .zoomable {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-image-image .zoomable > .relative-wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.image-image-image .zoomable > .relative-wrapper > .row-element {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: var(--aspect-ratio);
+    object-fit: contain;
+}
+
+
+/*** TEXT-IMAGE / IMAGE-TEXT ***/
+
+.text-image, .image-text {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 20px;
+}
+
+.text-image .zoomable, .image-text .zoomable {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-image .zoomable > .relative-wrapper,
+.image-text .zoomable > .relative-wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.text-image .zoomable > .relative-wrapper > .row-element,
+.image-text .zoomable > .relative-wrapper > .row-element {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: var(--aspect-ratio);
+    object-fit: contain;
 }
 
 
@@ -354,8 +393,8 @@ h4 {
     justify-content: space-evenly;
 }
 
-#fullscreen-container .image-image.THREE_BY_FOUR-THREE_BY_FOUR .zoomable.THREE_BY_FOUR {
-    max-width: 45%;
+#fullscreen-container .image-image .zoomable {
+    flex: 1 1 0;
 }
 
 #fullscreen-container .paragraph {
@@ -429,16 +468,6 @@ button {
     width: 16em;
     background: white;
     padding: 1.3em;
-}
-
-.image-image-image .zoomable {
-    max-width: 33%;
-    flex: 1 1 0;
-}
-
-.image-image-image {
-    justify-content: space-between;
-    align-items: flex-start;
 }
 
 #loader {

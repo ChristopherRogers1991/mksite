@@ -1,58 +1,38 @@
-from tkinter.constants import HORIZONTAL
-
-from PIL import Image, UnidentifiedImageError
-from PIL.ImageOps import exif_transpose
-from enum import auto, Enum
+from fractions import Fraction
 from functools import cached_property, cache
 from inspect import signature
 from os.path import basename
 from os.path import splitext
 from textwrap import dedent
 from warnings import warn
+
 import cv2
+from PIL import Image, UnidentifiedImageError
+from PIL.ImageOps import exif_transpose
 
 
 def _get_scaled_image_paths(path):
     base, ext = splitext(path)
     return f"{base}.1080{ext}", f"{base}.4k{ext}"
 
-class AspectRatio(Enum):
-    def __new__(cls, *args, **kwargs):
-        value = len(cls.__members__) + 1
-        obj = object.__new__(cls)
-        obj._value_ = value
-        return obj
 
-    def __init__(self, width: int, height: int):
-        self.width = width
-        self.height = height
-        self.ratio = width / height
+def _get_image_dimensions(file_path: str) -> tuple[int, int]:
+    """Return (width, height) for an image or video file."""
+    try:
+        image = Image.open(file_path)
+        image = exif_transpose(image)
+        return image.width, image.height
+    except UnidentifiedImageError:
+        vid = cv2.VideoCapture(file_path)
+        width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        return width, height
 
-    FOUR_BY_THREE = 4, 3
-    THREE_BY_TWO = 3, 2
-    TWO_BY_ONE = 2, 1
-    THREE_BY_FOUR = 3, 4
-    TWO_BY_THREE = 2, 3
 
-    @classmethod
-    def get_image_metadata(cls, file_path: str):
-        try:
-            image = Image.open(file_path)
-            image = exif_transpose(image)
-            ratio = image.width / image.height
-        except UnidentifiedImageError:
-            vid = cv2.VideoCapture(file_path)
-            height = vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
-            width = vid.get(cv2.CAP_PROP_FRAME_WIDTH)
-            ratio = width / height
-
-        differences = {abs(image_type.ratio - ratio) : image_type for image_type in AspectRatio}
-        closest_match = differences[min(differences)]
-
-        return closest_match
-
-    def __str__(self):
-        return self.name
+def _aspect_ratio_string(width: int, height: int) -> str:
+    """Return a simplified aspect ratio string like '3/4' or '16/9'."""
+    frac = Fraction(width, height).limit_denominator(100)
+    return f"{frac.numerator}/{frac.denominator}"
 
 
 class ImageWithMetadata():
@@ -62,21 +42,36 @@ class ImageWithMetadata():
         self.caption = caption
         self.credit = credit
 
+    @cached_property
+    def width(self) -> int:
+        w, h = _get_image_dimensions(self.image)
+        return w
+
+    @cached_property
+    def height(self) -> int:
+        w, h = _get_image_dimensions(self.image)
+        return h
+
+    @cached_property
+    def aspect_ratio(self) -> str:
+        return _aspect_ratio_string(self.width, self.height)
+
     def __str__(self):
         captioned = "captioned" if self.caption else ""
         caption = f'<p class="caption">{self.caption}</p>' if captioned else ""
         credit = f'<p class="credit">Photo Credit: {self.credit}</p>' if self.credit else ""
         source_1080, source_4k = _get_scaled_image_paths(self.image)
+        ar = self.aspect_ratio
 
         if self.image.endswith('webm'):
             element = f"""
-                    <video class="row-element webm {self.type}" onclick="toggleFullscreen(this)" autoplay="true" loop="true" muted="true" playsinline="true">
+                    <video class="row-element" onclick="toggleFullscreen(this)" autoplay="true" loop="true" muted="true" playsinline="true">
                         <source src={self.image}>
                     </video>
                       """
         else:
             element = f"""
-                <picture class="row-element {self.type}" onclick="toggleFullscreen(this)">
+                <picture class="row-element" onclick="toggleFullscreen(this)">
                     <source media="(min-height:1081px), (min-width:1921px" srcset={source_4k}>
                     <source srcset={source_1080}>
                     <img src={self.image}>
@@ -84,7 +79,7 @@ class ImageWithMetadata():
             """
 
         return f"""
-        <div class="zoomable {self.type} {captioned}">
+        <div class="zoomable {captioned}" data-aspect-ratio="{ar}">
             {caption}
             <div class=relative-wrapper>
                 {element}
@@ -95,10 +90,6 @@ class ImageWithMetadata():
             </div>
         </div>
         """
-
-    @cached_property
-    def type(self):
-        return AspectRatio.get_image_metadata(self.image)
 
 
 def normalize_images(*args):
@@ -115,19 +106,8 @@ def get_init_args(cls):
 
 class Row():
 
-    @property
-    def accepted_image_types(self):
-        return ()
-
     def html(self):
         raise Exception("Must be implemented by subclasses")
-
-    def validate_image_types(self, *images):
-        for image in images:
-            image_type = image.type if type(image) == ImageWithMetadata else AspectRatio.get_image_metadata(image)
-            if image_type not in self.accepted_image_types:
-                raise Exception(f"{self.__class__.__name__} only supports {self.accepted_image_types}. "
-                                f"Type was {image_type}")
 
     @classmethod
     def get_row(cls, kwargs):
@@ -146,7 +126,7 @@ class ImageRow(Row):
 
     def html(self):
         return dedent(f"""
-            <span class="image {self.image.type} row">
+            <span class="image row">
                 {self.image}
             </span>
             """)
@@ -161,7 +141,7 @@ class ImageImageRow(Row):
 
     def html(self):
         return dedent(f"""
-            <span class="image-image {self.left.type}-{self.right.type} row">
+            <span class="image-image row">
                 {self.left}
                 {self.right}
             </span>
@@ -174,16 +154,9 @@ class ImageImageImageRow(Row):
                  center: str | ImageWithMetadata,
                  right: str | ImageWithMetadata):
         left, center, right = normalize_images(left, center, right)
-        self.validate_image_types(left, center, right)
-        aspect_ratios = [AspectRatio.get_image_metadata(image.image) for image in (left, center, right)]
-        assert len(set(aspect_ratios)) == 1, f"{self.__class__.__name__} images must all be the same aspect ratio. Images were: {aspect_ratios}"
         self.left = left
         self.center = center
         self.right = right
-
-    @property
-    def accepted_image_types(self):
-        return AspectRatio.THREE_BY_FOUR, AspectRatio.TWO_BY_THREE
 
     def html(self):
         return dedent(f"""
@@ -199,16 +172,8 @@ class TextImageRow(Row):
 
     def __init__(self, text: str, image: str | ImageWithMetadata):
         image, = normalize_images(image)
-        self.validate_image_types(image)
         self.text = text
         self.image = image
-
-    @property
-    def accepted_image_types(self):
-        return (AspectRatio.THREE_BY_FOUR,
-                AspectRatio.FOUR_BY_THREE,
-                AspectRatio.TWO_BY_THREE,
-                AspectRatio.THREE_BY_TWO)
 
     def html(self):
         return dedent(f"""
@@ -225,16 +190,8 @@ class ImageTextRow(Row):
 
     def __init__(self, image: str | ImageWithMetadata, text: str):
         image, = normalize_images(image)
-        self.validate_image_types(image)
         self.text = text
         self.image = image
-
-    @property
-    def accepted_image_types(self):
-        return (AspectRatio.THREE_BY_FOUR,
-                AspectRatio.FOUR_BY_THREE,
-                AspectRatio.TWO_BY_THREE,
-                AspectRatio.THREE_BY_TWO)
 
     def html(self):
         return dedent(f"""
