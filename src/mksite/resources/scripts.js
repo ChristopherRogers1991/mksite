@@ -121,6 +121,9 @@ function initAspectRatios() {
  * aspect ratios. A wider image (larger W/H ratio) gets a larger flex-grow,
  * making it wider but keeping the height equal across the row.
  *
+ * With align-items: flex-start, captions below images do not stretch sibling
+ * containers — each zoomable is only as tall as its own content.
+ *
  * For text-image / image-text rows, also weight the image by its aspect ratio
  * so vertical images don't extend off-screen.
  */
