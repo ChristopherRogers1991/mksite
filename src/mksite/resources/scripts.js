@@ -120,6 +120,9 @@ function initAspectRatios() {
  * so that all images share the same height while maintaining their original
  * aspect ratios. A wider image (larger W/H ratio) gets a larger flex-grow,
  * making it wider but keeping the height equal across the row.
+ *
+ * For text-image / image-text rows, also weight the image by its aspect ratio
+ * so vertical images don't extend off-screen.
  */
 function calculateRowLayouts() {
     const multiImageRows = document.querySelectorAll(".image-image.row, .image-image-image.row");
@@ -138,6 +141,21 @@ function calculateRowLayouts() {
             z.style.flexShrink = 0;
             z.style.flexBasis = "0";
         });
+    });
+
+    // For text-image / image-text rows, weight the image by its aspect ratio
+    // so a vertical image (small ratio) takes less width and doesn't extend off-screen.
+    const textImageRows = document.querySelectorAll(".text-image.row, .image-text.row");
+    textImageRows.forEach((row) => {
+        const zoomable = row.querySelector(".zoomable[data-aspect-ratio]");
+        if (!zoomable) return;
+
+        const parts = zoomable.dataset.aspectRatio.split("/");
+        const ratio = parts[0] / parts[1];
+
+        zoomable.style.flexGrow = Math.min(ratio * 1.5, 2);
+        zoomable.style.flexShrink = 0;
+        zoomable.style.flexBasis = "0";
     });
 }
 
