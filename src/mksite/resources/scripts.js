@@ -153,7 +153,7 @@ function calculateRowLayouts() {
         const parts = zoomable.dataset.aspectRatio.split("/");
         const ratio = parts[0] / parts[1];
 
-        zoomable.style.flexGrow = Math.min(ratio * 1.4, 2);
+        zoomable.style.flexGrow = Math.min(ratio * ratio * 1.85, 2);
         zoomable.style.flexShrink = 0;
         zoomable.style.flexBasis = "0";
     });
